@@ -1,8 +1,8 @@
 # AiFi Talk
 
-Public editorial website: https://frederic-hsieh.github.io/aifi-talk/
+Public editorial website: https://aifi-talk.vercel.app/
 
-Run `npm ci`, `npm run build`, then `npm test`. Serve `dist/` with a static HTTP server. Push to `main` to deploy through GitHub Pages.
+Run `npm ci`, `npm run build`, then `npm test`. Serve `dist/` with a static HTTP server. Push to `main` to deploy through the connected Vercel project. GitHub Actions is not required.
 
 The publication allowlist is `content/posts.json`. Article copies in `content/` contain public prose only. Source documents remain in the author's private library. Add selected approved copies and required assets explicitly; never import or publish the whole vault. The build copies only named website files, assets, and generated reading pages into `dist/`.
 

@@ -1,7 +1,7 @@
 import {readFile,writeFile,mkdir,cp,rm} from 'node:fs/promises';
 import {marked} from 'marked';
 const root=new URL('../',import.meta.url); process.chdir(root.pathname);
-const base=process.env.SITE_URL || 'https://frederic-hsieh.github.io/aifi-talk';
+const base=process.env.SITE_URL || 'https://aifi-talk.vercel.app';
 const posts=JSON.parse(await readFile('content/posts.json','utf8'));
 const esc=s=>s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 await rm('dist',{recursive:true,force:true}); await mkdir('dist/posts',{recursive:true});

@@ -1,1 +1,16 @@
-{"name":"aifi-talk","private":true,"version":"1.0.0","type":"module","scripts":{"build":"node scripts/build.mjs","test":"node scripts/check.mjs"},"dependencies":{"marked":"^17.0.0"}}
+{
+  "name": "aifi-talk",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node scripts/check.mjs"
+  },
+  "dependencies": {
+    "marked": "^17.0.0"
+  },
+  "engines": {
+    "node": "22.x"
+  }
+}
