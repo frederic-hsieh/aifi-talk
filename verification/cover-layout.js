@@ -11,7 +11,7 @@
       width: box.width,
       height: box.height,
       loaded,
-      status: loaded && box.width > 0 && Math.abs(ratio - 16 / 9) < 0.01 && style.objectFit === 'contain' ? 'PASS' : 'FAIL'
+      status: loaded && box.width > 0 && Math.abs(ratio - 16 / 9) < 0.01 && style.objectFit === 'cover' ? 'PASS' : 'FAIL'
     };
   });
   const cards = [...document.querySelectorAll('.card-art')].map(el => el.getBoundingClientRect());
