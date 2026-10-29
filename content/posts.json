@@ -8,7 +8,7 @@
     "language": "en",
     "sourceSha256": "e87a070cbca8ae7cf22f96e0a0ff7d97d874db9037ab35844fbbc9860e86fbcc",
     "file": "pstack-practice.md",
-    "image": "assets/posts/pstack-03-x-cover.png",
+    "image": "assets/posts/pstack-03-blueprint-cover.png",
     "imageAlt": "pstack / 03: From ideas to evidence"
   },
   {
@@ -32,7 +32,7 @@
     "language": "en",
     "sourceSha256": "78277258017812fc52ebec88cc63885d18c1f9e80faab8be84d6b7b23698592d",
     "file": "pstack-introduction.md",
-    "image": "assets/posts/pstack-excalidraw-en.png",
-    "imageAlt": "Diagram of pstack tasks, playbooks, and skills"
+    "image": "assets/posts/pstack-01-blueprint-cover.png",
+    "imageAlt": "Getting started with pstack: core concepts, setup and playbooks"
   }
 ]

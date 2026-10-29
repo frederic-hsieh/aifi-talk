@@ -27,7 +27,10 @@ for (const asset of ['favicon.svg', 'icons', 'posts']) await cp(`assets/${asset}
 
 for (const post of posts) {
   const markdown = await read(`content/${post.file}`);
-  const html = marked.parse(markdown);
+  let html = marked.parse(markdown);
+  // Render the website's selected cover while preserving archived source prose.
+  if (post.id === 'pstack-practice') html = html.replace('../../assets/posts/pstack-03-x-cover.png', '../../' + post.image);
+  if (post.id === 'pstack-introduction') html = html.replace('</h1>', `</h1><p><img src="../../${post.image}" alt="${esc(post.imageAlt)}"></p>`);
   const minutes = Math.max(1, Math.ceil(markdown.split(/\s+/).length / 220));
   records.push({ ...post, kind: 'article', topic: 'AI & building', length: `${minutes} min read`, url: `posts/${post.id}/` });
   const related = posts.filter(other => other.id !== post.id).map(other => `<li><a href="../${other.id}/">${esc(other.title)}</a></li>`).join('');
@@ -44,7 +47,7 @@ ${html}
 
 await writeFile('dist/posts.js', `const publishedStories = ${JSON.stringify(records)};\n`);
 let homepage = await read('dist/index.html');
-const metadata = `<link rel="canonical" href="${base}/"><meta property="og:type" content="website"><meta property="og:title" content="AiFi Talk · Frederic's field notes"><meta property="og:description" content="AI, money, and making things. A personal publication by Frederic."><meta property="og:url" content="${base}/"><meta property="og:image" content="${base}/assets/posts/pstack-03-x-cover.png"><meta name="twitter:card" content="summary_large_image">`;
+const metadata = `<link rel="canonical" href="${base}/"><meta property="og:type" content="website"><meta property="og:title" content="AiFi Talk · Frederic's field notes"><meta property="og:description" content="AI, money, and making things. A personal publication by Frederic."><meta property="og:url" content="${base}/"><meta property="og:image" content="${base}/assets/posts/pstack-03-blueprint-cover.png"><meta name="twitter:card" content="summary_large_image">`;
 const featured = records[0];
 homepage = homepage.replace('</head>', `${metadata}</head>`)
   .replace(/<a([^>]*id="hero-art"[^>]*)><\/a>/, `<a class="cover feature-art" id="hero-art" href="${featured.url}" aria-label="Read ${esc(featured.title)}"><img src="${featured.image}" alt="" decoding="async"></a>`)
@@ -53,7 +56,7 @@ homepage = homepage.replace('</head>', `${metadata}</head>`)
   .replace(/id="featured-link" href="[^"]*"/, `id="featured-link" href="${featured.url}"`)
   .replace('<div class="grid" id="cards"></div>', `<div class="grid" id="cards">${records.map(post => `<article class="card"><div class="meta">Article · AI &amp; building</div><h3><a href="${post.url}">${esc(post.title)}</a></h3><p>${esc(post.summary)}</p><a class="cover card-art" href="${post.url}" aria-label="Read ${esc(post.title)}"><img src="${post.image}" alt="" loading="lazy"></a><div class="card-bottom">${post.date} · ${post.length}</div></article>`).join('')}</div>`);
 await writeFile('dist/index.html', homepage);
-await writeFile('dist/posts/index.html', `<!doctype html><html lang="en"><head>${head('Articles', 'Notes on AI, money, and making things.', `${base}/posts/`, 'assets/posts/pstack-03-x-cover.png', '../', 'website')}</head><body><main class="article-page"><a class="logo" href="../">AiFi Talk</a><h1>Articles</h1>${posts.map(post => `<h2><a href="${post.id}/">${esc(post.title)}</a></h2><p>${esc(post.summary)}</p>`).join('')}</main></body></html>`);
+await writeFile('dist/posts/index.html', `<!doctype html><html lang="en"><head>${head('Articles', 'Notes on AI, money, and making things.', `${base}/posts/`, 'assets/posts/pstack-03-blueprint-cover.png', '../', 'website')}</head><body><main class="article-page"><a class="logo" href="../">AiFi Talk</a><h1>Articles</h1>${posts.map(post => `<h2><a href="${post.id}/">${esc(post.title)}</a></h2><p>${esc(post.summary)}</p>`).join('')}</main></body></html>`);
 await writeFile('dist/feed.xml', `<?xml version="1.0" encoding="utf-8"?><rss version="2.0"><channel><title>AiFi Talk</title><link>${base}/</link><description>AI, money, and making things.</description>${posts.map(post => `<item><title>${esc(post.title)}</title><link>${articleUrl(post)}</link><guid>${articleUrl(post)}</guid><description>${esc(post.summary)}</description><pubDate>${new Date(post.date + 'T12:00:00Z').toUTCString()}</pubDate></item>`).join('')}</channel></rss>`);
 await writeFile('dist/sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${['/', '/posts/', '/about/', '/about/zh/', ...posts.map(post => `/posts/${post.id}/`)].map(path => `<url><loc>${base}${path}</loc></url>`).join('')}</urlset>`);
 await writeFile('dist/robots.txt', `User-agent: *\nAllow: /\nSitemap: ${base}/sitemap.xml\n`);
@@ -64,7 +67,7 @@ const aboutEditions = [
 ];
 for (const page of aboutEditions) {
   await mkdir(`dist/${page.dir}`, {recursive:true});
-  await writeFile(`dist/${page.dir}/index.html`, `<!doctype html><html lang="${page.lang}"><head>${head(page.title, page.paragraphs[0], `${base}/${page.dir}/`, 'assets/posts/pstack-03-x-cover.png', page.prefix, 'website')}</head><body class="editorial-page"><div class="wrap"><header><a class="logo" href="${page.prefix}">AiFi Talk</a><nav aria-label="Navigation"><a href="${page.prefix}">${page.back}</a><a href="${page.languageLink}">${page.languageName}</a></nav></header><main class="article-page about-page"><p class="eyebrow">${page.eyebrow}</p><h1>${page.greeting}</h1>${page.paragraphs.map(text=>`<p>${text}</p>`).join('')}<p class="about-projects">Bloomtrade · SupWallet</p><a class="text-link" href="${page.prefix}#library">${page.link}</a></main></div></body></html>`);
+  await writeFile(`dist/${page.dir}/index.html`, `<!doctype html><html lang="${page.lang}"><head>${head(page.title, page.paragraphs[0], `${base}/${page.dir}/`, 'assets/posts/pstack-03-blueprint-cover.png', page.prefix, 'website')}</head><body class="editorial-page"><div class="wrap"><header><a class="logo" href="${page.prefix}">AiFi Talk</a><nav aria-label="Navigation"><a href="${page.prefix}">${page.back}</a><a href="${page.languageLink}">${page.languageName}</a></nav></header><main class="article-page about-page"><p class="eyebrow">${page.eyebrow}</p><h1>${page.greeting}</h1>${page.paragraphs.map(text=>`<p>${text}</p>`).join('')}<p class="about-projects">Bloomtrade · SupWallet</p><a class="text-link" href="${page.prefix}#library">${page.link}</a></main></div></body></html>`);
 }
 
 await writeFile('dist/.nojekyll', '');
