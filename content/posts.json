@@ -7,7 +7,9 @@
     "source": "https://x.com/0xfrederichhh/status/2115651774858047862",
     "language": "en",
     "sourceSha256": "e87a070cbca8ae7cf22f96e0a0ff7d97d874db9037ab35844fbbc9860e86fbcc",
-    "file": "pstack-practice.md"
+    "file": "pstack-practice.md",
+    "image": "assets/posts/pstack-03-x-cover.png",
+    "imageAlt": "pstack / 03: From ideas to evidence"
   },
   {
     "id": "pstack-verification",
@@ -17,7 +19,9 @@
     "source": "https://frederichhh.substack.com/p/the-core-of-pstack-verification-skills",
     "language": "en",
     "sourceSha256": "7f90ed483f5d916a894d7cf489fa4d73465195d82d53325c7a4dfa35fbaeee0c",
-    "file": "pstack-verification.md"
+    "file": "pstack-verification.md",
+    "image": "assets/posts/pstack-verification-blueprint-banner.png",
+    "imageAlt": "A blueprint of the pstack verification workflow"
   },
   {
     "id": "pstack-introduction",
@@ -27,6 +31,8 @@
     "source": "https://x.com/0xfrederichhh/status/2113836291963953535",
     "language": "en",
     "sourceSha256": "78277258017812fc52ebec88cc63885d18c1f9e80faab8be84d6b7b23698592d",
-    "file": "pstack-introduction.md"
+    "file": "pstack-introduction.md",
+    "image": "assets/posts/pstack-excalidraw-en.png",
+    "imageAlt": "Diagram of pstack tasks, playbooks, and skills"
   }
 ]

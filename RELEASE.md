@@ -9,3 +9,5 @@ The publication allowlist is `content/posts.json`. Article copies in `content/` 
 Three English pstack articles launch with the existing English/Traditional Chinese interface. Articles retain their original language and link to their original publication. Copies reflect the archived edition; the original platform may have subsequent edits. Saves and interface language persist in this browser only. RSS and sitemap are generated during build. No newsletter backend is connected.
 
 All original writing and artwork remain copyright their respective owners. This repository does not grant a content reuse license.
+
+Personal photographs are withheld from publication. The About page has English and Traditional Chinese editions. Article covers come from the published articles and use consistent display proportions.
