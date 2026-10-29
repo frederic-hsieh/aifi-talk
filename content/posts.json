@@ -9,7 +9,15 @@
     "sourceSha256": "e87a070cbca8ae7cf22f96e0a0ff7d97d874db9037ab35844fbbc9860e86fbcc",
     "file": "pstack-practice.md",
     "image": "assets/posts/pstack-03-blueprint-cover.png",
-    "imageAlt": "pstack / 03: From ideas to evidence"
+    "imageAlt": "pstack / 03: From ideas to evidence",
+    "zh": {
+      "title": "pstack 實戰：3 個案例，5 個讓 agent 更好用的技巧",
+      "summary": "這篇用三個案例介紹 pstack：用 prototypes 比較網站設計，避免太早選定方向；用 baseline 和 trace 找出 app 的效能瓶頸；和利用程式與歷史對話找回先前的決策脈絡。",
+      "file": "pstack-practice.zh-TW.md",
+      "sourceSha256": "1a93d3a0ffcdfeceaf61b49c643c56eb115b0e12e3c6cc873df33b417218f566",
+      "source": "https://www.threads.com/@frede.richhh/post/De_R_TkHIMt",
+      "date": "2026-10-27"
+    }
   },
   {
     "id": "pstack-verification",
@@ -21,7 +29,15 @@
     "sourceSha256": "7f90ed483f5d916a894d7cf489fa4d73465195d82d53325c7a4dfa35fbaeee0c",
     "file": "pstack-verification.md",
     "image": "assets/posts/pstack-verification-blueprint-banner.png",
-    "imageAlt": "A blueprint of the pstack verification workflow"
+    "imageAlt": "A blueprint of the pstack verification workflow",
+    "zh": {
+      "title": "pstack 最重要的一環: verification skills, 讓 agent 自己驗證",
+      "summary": "AI agent 已經能寫出不少程式。但寫完之後，常常還是要有人打開 app、點過一遍流程、把錯誤訊息貼回去，再確認修正有沒有生效。",
+      "file": "pstack-verification.zh-TW.md",
+      "sourceSha256": "d8924f168aa1c91b050765fce5b6dd2a19536a6759e283becf318d3495f31a7f",
+      "source": "https://www.threads.com/@frede.richhh/post/De2tdzKmq4g",
+      "date": "2026-10-23"
+    }
   },
   {
     "id": "pstack-introduction",
@@ -33,6 +49,14 @@
     "sourceSha256": "78277258017812fc52ebec88cc63885d18c1f9e80faab8be84d6b7b23698592d",
     "file": "pstack-introduction.md",
     "image": "assets/posts/pstack-01-blueprint-cover.png",
-    "imageAlt": "Getting started with pstack: core concepts, setup and playbooks"
+    "imageAlt": "Getting started with pstack: core concepts, setup and playbooks",
+    "zh": {
+      "title": "pstack 入門：核心概念、安裝與 playbooks",
+      "summary": "Grok Bot 的開發者 Lauren Tan 在 9 月 21 日的貼文中說，她上個月把 2,500 個 PR（程式修改提案）送上了 production。她是怎麼做到的？",
+      "file": "pstack-introduction.zh-TW.md",
+      "sourceSha256": "9063bd985995339fd8b378d87989c5987fb516338bbddfaeb68097a7bcf196fe",
+      "source": "https://www.threads.com/@frede.richhh/post/De0hSvqkaPf",
+      "date": "2026-10-22"
+    }
   }
 ]

@@ -12,7 +12,7 @@ const cards = document.querySelector('#cards');
 let toastTimer;
 const topicKeys = {'AI & building':'topicAi','Money & systems':'topicMoney','Creative process':'topicCreative'};
 function t(key) { return messages[state.locale][key]; }
-function localizedStory(story) { return state.locale === 'zh-Hant' ? {...story, ...storyTranslations[story.id]} : story; }
+function localizedStory(story) { return state.locale === 'zh-Hant' ? {...story, ...story.zh} : story; }
 function topicLabel(topic) { return t(topicKeys[topic]); }
 function dateLabel(story) { return new Date(story.date+'T12:00:00').toLocaleDateString(state.locale, {year:'numeric',month:'short',day:'numeric'}); }
 function readingLabel(story) { return state.locale === 'zh-Hant' ? `閱讀約 ${story.length.split(' ')[0]} 分鐘` : story.length; }
@@ -24,13 +24,13 @@ function art(story, eager = false) {
 function notify(message) { document.querySelector('#toast').textContent = message; clearTimeout(toastTimer); toastTimer = setTimeout(() => document.querySelector('#toast').textContent = '', 3000); }
 function render() {
   const matches = stories.filter(story => {
-    const translated = storyTranslations[story.id] || story;
+    const translated = story.zh || story;
     const searchable = `${story.title} ${story.summary} ${story.topic} ${translated.title} ${translated.summary} ${messages['zh-Hant'][topicKeys[story.topic]]}`.toLowerCase();
     return (state.format === 'all' || (state.format === 'saved' ? state.saved.has(story.id) : story.kind === state.format)) && (state.topic === 'all' || story.topic === state.topic) && searchable.includes(state.query.toLowerCase().trim());
   });
   cards.innerHTML = matches.map(original => {
     const story = localizedStory(original);
-    return `<article class="card" data-story="${story.id}"><div class="meta"><span>${t('article')}</span><span>·</span><span>${topicLabel(story.topic)}</span></div><h3><a href="${escapeHtml(story.url)}" lang="en">${escapeHtml(story.title)}</a></h3><p lang="en">${escapeHtml(story.summary)}</p><a class="cover card-art" href="${escapeHtml(story.url)}" aria-label="${escapeHtml(t('previewVerb') + ' ' + story.title)}">${art(story)}</a><div class="card-bottom"><span>${dateLabel(story)} · ${readingLabel(story)}</span><button class="bookmark" data-save="${story.id}" title="${t(state.saved.has(story.id) ? 'unsave' : 'save')}" aria-label="${escapeHtml(t(state.saved.has(story.id) ? 'unsave' : 'save') + ' ' + story.title)}" aria-pressed="${state.saved.has(story.id)}"><span class="ui-icon icon-bookmark" aria-hidden="true"></span></button></div></article>`;
+    return `<article class="card" data-story="${story.id}"><div class="meta"><span>${t('article')}</span><span>·</span><span>${topicLabel(story.topic)}</span></div><h3><a href="${escapeHtml(story.url)}" lang="${state.locale}">${escapeHtml(story.title)}</a></h3><p lang="${state.locale}">${escapeHtml(story.summary)}</p><a class="cover card-art" href="${escapeHtml(story.url)}" aria-label="${escapeHtml(t('previewVerb') + ' ' + story.title)}">${art(story)}</a><div class="card-bottom"><span>${dateLabel(story)} · ${readingLabel(story)}</span><button class="bookmark" data-save="${story.id}" title="${t(state.saved.has(story.id) ? 'unsave' : 'save')}" aria-label="${escapeHtml(t(state.saved.has(story.id) ? 'unsave' : 'save') + ' ' + story.title)}" aria-pressed="${state.saved.has(story.id)}"><span class="ui-icon icon-bookmark" aria-hidden="true"></span></button></div></article>`;
   }).join('') || `<div class="empty"><h3>${t('emptyTitle')}</h3><p>${t('emptyBody')}</p><button class="text-link" id="reset">${t('reset')}</button></div>`;
   document.querySelector('#result-count').textContent = state.locale === 'zh-Hant' ? `${matches.length} 則內容` : `${matches.length} ${matches.length === 1 ? 'story' : 'stories'}`;
   document.querySelector('#saved-count').textContent = state.saved.size;
@@ -55,8 +55,8 @@ function renderLanguage() {
   document.querySelector('#hero-art').setAttribute('aria-label', `${t('previewVerb')} ${featured.title}`);
   document.querySelector('#featured-title').textContent = featured.title;
   document.querySelector('#featured-summary').textContent = featured.summary;
-  document.querySelector('#featured-title').lang = 'en';
-  document.querySelector('#featured-summary').lang = 'en';
+  document.querySelector('#featured-title').lang = state.locale;
+  document.querySelector('#featured-summary').lang = state.locale;
   ['#hero-art', '#featured-title', '#featured-link'].forEach(selector => { document.querySelector(selector).href = featured.url; });
   render();
 

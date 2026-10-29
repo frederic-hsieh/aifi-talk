@@ -18,7 +18,7 @@ function head(title, description, url, image, prefix = '../../', type = 'article
 
 await rm('dist', { recursive: true, force: true });
 await mkdir('dist/posts', { recursive: true });
-for (const file of ['index.html', 'style.css', 'tokens.css', 'app.js', 'i18n.js']) {
+for (const file of ['index.html', 'style.css', 'tokens.css', 'app.js', 'i18n.js', 'article-contents.js']) {
   await cp(file, `dist/${file}`, { recursive: true });
 }
 
@@ -26,23 +26,36 @@ await mkdir('dist/assets', { recursive: true });
 for (const asset of ['favicon.svg', 'icons', 'posts']) await cp(`assets/${asset}`, `dist/assets/${asset}`, { recursive: true });
 
 for (const post of posts) {
-  const markdown = await read(`content/${post.file}`);
-  let html = marked.parse(markdown);
-  // Render the website's selected cover while preserving archived source prose.
-  if (post.id === 'pstack-practice') html = html.replace('../../assets/posts/pstack-03-x-cover.png', '../../' + post.image);
-  if (post.id === 'pstack-introduction') html = html.replace('</h1>', `</h1><p><img src="../../${post.image}" alt="${esc(post.imageAlt)}"></p>`);
-  const minutes = Math.max(1, Math.ceil(markdown.split(/\s+/).length / 220));
-  records.push({ ...post, kind: 'article', topic: 'AI & building', length: `${minutes} min read`, url: `posts/${post.id}/` });
-  const related = posts.filter(other => other.id !== post.id).map(other => `<li><a href="../${other.id}/">${esc(other.title)}</a></li>`).join('');
-  const structured = JSON.stringify({ '@context': 'https://schema.org', '@type': 'BlogPosting', headline: post.title, description: post.summary, image: `${base}/${post.image}`, datePublished: post.date, author: { '@type': 'Person', name: 'Frederic', url: `${base}/about/` }, mainEntityOfPage: articleUrl(post), inLanguage: 'en' }).replaceAll('<', '\\u003c');
-  await mkdir(`dist/posts/${post.id}`, { recursive: true });
-  await writeFile(`dist/posts/${post.id}/index.html`, `<!doctype html><html lang="en"><head>${head(post.title, post.summary, articleUrl(post), post.image)}<script type="application/ld+json">${structured}</script></head>
-<body><a class="skip-link" href="#article">Skip to article</a><div class="wrap"><header><a class="logo" href="../../">AiFi Talk</a><a href="../../#library">All articles / 所有文章 ↗</a></header>
-<main class="article-page" id="article" tabindex="-1"><p class="eyebrow">Frederic · <time datetime="${post.date}">${new Date(post.date + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })}</time> · ${minutes} min read · English</p>
-${html}
-<section class="article-author" aria-label="About the author"><div><h2>Written by Frederic</h2><p>I build products, explore AI and finance, and write about what I learn.</p><a href="../../about/">More about me ↗</a></div></section>
-<nav class="article-related" aria-label="More in the pstack series"><h2>Keep reading</h2><ul>${related}</ul></nav>
-<footer><p>Originally published on <a href="${esc(post.source)}">${new URL(post.source).hostname}</a>. Republished from my archived copy.</p><a href="../../#library">← Back to articles</a></footer></main></div></body></html>`);
+  records.push({ ...post, kind: 'article', topic: 'AI & building', url: `posts/${post.id}/` });
+  for (const language of ['en', 'zh-Hant']) {
+    const chinese = language === 'zh-Hant';
+    const edition = chinese ? { ...post, ...post.zh } : post;
+    const prefix = chinese ? '../../../' : '../../';
+    const route = `posts/${post.id}/${chinese ? 'zh/' : ''}`;
+    const url = `${base}/${route}`;
+    const markdown = await read(`content/${edition.file}`);
+    let html = marked.parse(markdown);
+    let sectionIndex = 0;
+    html = html.replace(/<h2>/g, () => `<h2 id="section-${++sectionIndex}" tabindex="-1">`);
+    if (post.id === 'pstack-practice') html = html.replace('../../assets/posts/pstack-03-x-cover.png', '../../' + post.image);
+    if (chinese || post.id === 'pstack-introduction') html = html.replace('</h1>', `</h1><p><img src="../../${post.image}" alt="${esc(post.imageAlt)}"></p>`);
+    if (chinese) html = html.replaceAll('../../assets/', '../../../assets/');
+    const minutes = Math.max(1, Math.ceil(chinese ? (markdown.match(/[\u3400-\u9fff]/g) || []).length / 400 + markdown.split(/\s+/).length / 220 : markdown.split(/\s+/).length / 220));
+    const record = records.at(-1);
+    if (chinese) record.zh = { ...post.zh, url: route, length: `${minutes} min read` };
+    else record.length = `${minutes} min read`;
+    const related = posts.filter(other => other.id !== post.id).map(other => `<li><a href="${chinese ? '../../' : '../'}${other.id}/${chinese ? 'zh/' : ''}">${esc(chinese ? other.zh.title : other.title)}</a></li>`).join('');
+    const structured = JSON.stringify({ '@context': 'https://schema.org', '@type': 'BlogPosting', headline: edition.title, description: edition.summary, image: `${base}/${post.image}`, datePublished: edition.date, author: { '@type': 'Person', name: 'Frederic', url: `${base}/about/` }, mainEntityOfPage: url, inLanguage: language }).replaceAll('<', '\\u003c');
+    await mkdir(`dist/${route}`, { recursive: true });
+    await writeFile(`dist/${route}index.html`, `<!doctype html><html lang="${language}"><head>${head(edition.title, edition.summary, url, post.image, prefix)}
+<link rel="alternate" hreflang="en" href="${articleUrl(post)}"><link rel="alternate" hreflang="zh-Hant" href="${articleUrl(post)}zh/"><script type="application/ld+json">${structured}</script></head>
+<body><a class="skip-link" href="#article">${chinese ? '跳至文章' : 'Skip to article'}</a><div class="wrap"><header><a class="logo" href="${prefix}">AiFi Talk</a><nav aria-label="${chinese ? '文章導覽' : 'Article navigation'}"><a href="${prefix}#library">${chinese ? '所有文章' : 'All articles'} ↗</a><div class="article-language" aria-label="Language"><a data-article-language="en" lang="en" href="${chinese ? '../' : './'}" ${chinese ? '' : 'aria-current="page"'}>English</a><a data-article-language="zh-Hant" lang="zh-Hant" href="${chinese ? './' : 'zh/'}" ${chinese ? 'aria-current="page"' : ''}>繁體中文</a></div></nav></header>
+<main class="article-page" id="article" tabindex="-1"><p class="eyebrow">Frederic · <time datetime="${edition.date}">${new Date(edition.date + 'T12:00:00Z').toLocaleDateString(language, { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })}</time> · ${chinese ? `閱讀約 ${minutes} 分鐘 · 繁體中文` : `${minutes} min read · English`}</p>
+<div class="article-body">${html}</div>
+<section class="article-author" aria-label="${chinese ? '關於作者' : 'About the author'}"><div><h2>${chinese ? '作者 Frederic' : 'Written by Frederic'}</h2><p>${chinese ? '我透過做產品、測試想法來探索 AI 與金融，並把過程中的心得寫下來。' : 'I build products, explore AI and finance, and write about what I learn.'}</p><a href="${prefix}about/${chinese ? 'zh/' : ''}">${chinese ? '關於我' : 'More about me'} ↗</a></div></section>
+<nav class="article-related" aria-label="${chinese ? 'pstack 系列文章' : 'More in the pstack series'}"><h2>${chinese ? '繼續閱讀' : 'Keep reading'}</h2><ul>${related}</ul></nav>
+<footer><p>${chinese ? '原文刊登於' : 'Originally published on'} <a href="${esc(edition.source)}">${new URL(edition.source).hostname}</a>${chinese ? '。本文依保存的原稿刊載。' : '. Republished from my archived copy.'}</p><a href="${prefix}#library">← ${chinese ? '回到文章列表' : 'Back to articles'}</a></footer></main></div><script src="${prefix}article-contents.js"></script></body></html>`);
+  }
 }
 
 await writeFile('dist/posts.js', `const publishedStories = ${JSON.stringify(records)};\n`);
@@ -58,7 +71,7 @@ homepage = homepage.replace('</head>', `${metadata}</head>`)
 await writeFile('dist/index.html', homepage);
 await writeFile('dist/posts/index.html', `<!doctype html><html lang="en"><head>${head('Articles', 'Notes on AI, money, and making things.', `${base}/posts/`, 'assets/posts/pstack-03-blueprint-cover.png', '../', 'website')}</head><body><main class="article-page"><a class="logo" href="../">AiFi Talk</a><h1>Articles</h1>${posts.map(post => `<h2><a href="${post.id}/">${esc(post.title)}</a></h2><p>${esc(post.summary)}</p>`).join('')}</main></body></html>`);
 await writeFile('dist/feed.xml', `<?xml version="1.0" encoding="utf-8"?><rss version="2.0"><channel><title>AiFi Talk</title><link>${base}/</link><description>AI, money, and making things.</description>${posts.map(post => `<item><title>${esc(post.title)}</title><link>${articleUrl(post)}</link><guid>${articleUrl(post)}</guid><description>${esc(post.summary)}</description><pubDate>${new Date(post.date + 'T12:00:00Z').toUTCString()}</pubDate></item>`).join('')}</channel></rss>`);
-await writeFile('dist/sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${['/', '/posts/', '/about/', '/about/zh/', ...posts.map(post => `/posts/${post.id}/`)].map(path => `<url><loc>${base}${path}</loc></url>`).join('')}</urlset>`);
+await writeFile('dist/sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${['/', '/posts/', '/about/', '/about/zh/', ...posts.flatMap(post => [`/posts/${post.id}/`, `/posts/${post.id}/zh/`])].map(path => `<url><loc>${base}${path}</loc></url>`).join('')}</urlset>`);
 await writeFile('dist/robots.txt', `User-agent: *\nAllow: /\nSitemap: ${base}/sitemap.xml\n`);
 
 const aboutEditions = [
