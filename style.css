@@ -140,3 +140,6 @@ html[lang=zh-Hant] .article-page h1 { font-size: clamp(32px,4vw,46px); line-heig
 html[lang=zh-Hant] .article-page h2 { font-size: 28px; line-height: 1.5; }
 @media(max-width:560px) { .article-language a { padding: 0 8px; } }
 .contents-panel:not(:popover-open) { display: none; }
+
+.language-switch, .article-language { display: inline-flex; gap: 0; padding: 2px; border: 1px solid var(--line); border-radius: 8px; }
+.language-switch button, .article-language a { justify-content: center; min-width: 44px; min-height: 44px; padding: 0 8px; font: 500 13px var(--sans); border-radius: 5px; }
