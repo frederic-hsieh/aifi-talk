@@ -34,3 +34,18 @@ console.log('PASS: no personal photos published, separate About pages, per-artic
 
 for (const post of posts) assert(home.includes(`href="posts/${post.id}/"`));
 assert(!home.includes('id="featured-title" href="posts/"></a>'));
+
+const approvedCovers = JSON.parse(await readFile('verification/covers.json', 'utf8'));
+for (const [id, image] of Object.entries(approvedCovers)) {
+ const post = posts.find(post => post.id === id);
+ assert(post, `Missing article: ${id}`);
+ assert.equal(post.image, image, `${id}: use the reviewed series cover, not an internal diagram or platform banner`);
+ const bytes = await readFile(`dist/${image}`);
+ assert.equal(bytes.subarray(1,4).toString(), 'PNG', `${id}: expected a PNG cover`);
+ const width = bytes.readUInt32BE(16), height = bytes.readUInt32BE(20);
+ assert(width / height > 1.7 && width / height < 2, `${id}: unexpected source proportions (${width} × ${height}); review before publishing`);
+ assert(home.includes(`src="${image}"`), `${id}: cover missing from rendered homepage`);
+ const article = await readFile(`dist/posts/${id}/index.html`, 'utf8');
+ assert(article.includes(`src="../../${image}"`), `${id}: selected cover missing from reading page`);
+}
+console.log('PASS: reviewed pstack series covers, source proportions, and homepage/reading-page consistency. Browser geometry requires the separate layout check.');

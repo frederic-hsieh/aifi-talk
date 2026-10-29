@@ -11,3 +11,9 @@ Three English pstack articles launch with the existing English/Traditional Chine
 All original writing and artwork remain copyright their respective owners. This repository does not grant a content reuse license.
 
 Personal photographs are withheld from publication. The About page has English and Traditional Chinese editions. Article covers come from the published articles and use consistent display proportions.
+
+## Cover verification
+
+`npm test` checks the reviewed series artwork in `verification/covers.json`, confirms the files exist with suitable source proportions, and checks that the homepage and reading pages use them. A different image requires visual review before updating that contract. Vercel runs this gate before publishing.
+
+For UI changes, evaluate the read-only script in `verification/cover-layout.js` in the browser on the built homepage. Clear search and select Everything first. Scroll the archive into view so lazy images load. Run in Magazine and Library layouts at desktop and 390px, in both interface languages. Require PASS: images loaded, 16:9 display frames, equal card dimensions, and `object-fit: contain`. Inspect a screenshot too: correct artwork, legible titles, no clipping, no unintended empty space. Save results and screenshots under `evidence/`. Repeat on production after deploying affected changes. Automated build checks alone do not prove browser layout or image loading; report any unrun browser/device checks as NOT TESTED.
