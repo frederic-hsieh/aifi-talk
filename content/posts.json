@@ -1,0 +1,32 @@
+[
+  {
+    "id": "pstack-practice",
+    "title": "pstack in practice: 3 cases and 5 tips for working with agents",
+    "summary": "Three practical ways to use pstack: compare website prototypes before choosing a design, measure where an app is slow, and recover earlier decisions from code and chat history.",
+    "date": "2026-10-28",
+    "source": "https://x.com/0xfrederichhh/status/2115651774858047862",
+    "language": "en",
+    "sourceSha256": "e87a070cbca8ae7cf22f96e0a0ff7d97d874db9037ab35844fbbc9860e86fbcc",
+    "file": "pstack-practice.md"
+  },
+  {
+    "id": "pstack-verification",
+    "title": "The core of pstack: verification skills that let agents check their own work",
+    "summary": "AI agents can already write plenty of code. But once they finish, someone still has to open the app, click through the flow, report the errors, and check whether the next fix actually works.",
+    "date": "2026-10-23",
+    "source": "https://frederichhh.substack.com/p/the-core-of-pstack-verification-skills",
+    "language": "en",
+    "sourceSha256": "7f90ed483f5d916a894d7cf489fa4d73465195d82d53325c7a4dfa35fbaeee0c",
+    "file": "pstack-verification.md"
+  },
+  {
+    "id": "pstack-introduction",
+    "title": "Getting started with pstack: core concepts, setup and playbooks",
+    "summary": "In her September 21 post, Grok Bot developer Lauren Tan said she shipped 2,500 PRs (proposed code changes) to production the previous month. How did she do it?",
+    "date": "2026-10-23",
+    "source": "https://x.com/0xfrederichhh/status/2113836291963953535",
+    "language": "en",
+    "sourceSha256": "78277258017812fc52ebec88cc63885d18c1f9e80faab8be84d6b7b23698592d",
+    "file": "pstack-introduction.md"
+  }
+]

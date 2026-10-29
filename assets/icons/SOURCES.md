@@ -1,0 +1,1 @@
+Social SVGs: Simple Icons, https://github.com/simple-icons/simple-icons (CC0-1.0), retrieved 2026-10-27. Brand marks remain subject to their respective trademark guidelines. Utility SVGs: local 24px outline drawings.
