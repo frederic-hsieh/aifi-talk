@@ -222,3 +222,9 @@ html { scroll-padding-top: 120px; }
   .article-body h2 { padding-top: 24px; scroll-margin-top: 100px; }
 }
 html:has(.editorial-page) { scroll-padding-top: 0; }
+
+/* A compact reading outline keeps long RFS titles usable on phones. */
+.article-outline { width: 100%; table-layout: fixed; border-collapse: collapse; margin: 24px 0 40px; font-size: 16px; }
+.article-outline th, .article-outline td { border-bottom: 1px solid var(--line); padding: 8px 12px; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
+.article-outline th:first-child, .article-outline td:first-child { width: 52px; padding-top: 18px; color: var(--muted); }
+.article-outline a { display: flex; align-items: center; min-height: 44px; color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 4px; }

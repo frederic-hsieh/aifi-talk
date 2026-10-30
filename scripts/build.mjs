@@ -39,8 +39,15 @@ for (const post of posts) {
     let sectionIndex = 0;
     html = html.replace(/<h2>/g, () => `<h2 id="section-${++sectionIndex}" tabindex="-1">`);
     if (post.id === 'pstack-practice') html = html.replace('../../assets/posts/pstack-03-x-cover.png', '../../' + post.image);
-    if (chinese || post.id === 'pstack-introduction') html = html.replace('</h1>', `</h1><p><img src="../../${post.image}" alt="${esc(post.imageAlt)}"></p>`);
+    if (chinese || post.original || post.id === 'pstack-introduction') html = html.replace('</h1>', `</h1><p><img src="../../${post.image}" alt="${esc(post.imageAlt)}"></p>`);
     if (chinese) html = html.replaceAll('../../assets/', '../../../assets/');
+    if (post.original) {
+      const sections = [...html.matchAll(/<h2 id="([^"]+)" tabindex="-1">\d+\. (.*?)<\/h2>/g)];
+      html = html.replace('<table>', '<table class="article-outline">');
+      for (const [, id, title] of sections) {
+        html = html.replace(`<td>${title}</td>`, `<td><a href="#${id}">${title}</a></td>`);
+      }
+    }
     const minutes = Math.max(1, Math.ceil(chinese ? (markdown.match(/[\u3400-\u9fff]/g) || []).length / 400 + markdown.split(/\s+/).length / 220 : markdown.split(/\s+/).length / 220));
     const record = records.at(-1);
     if (chinese) record.zh = { ...post.zh, url: route, length: `${minutes} min read` };
@@ -54,8 +61,8 @@ for (const post of posts) {
 <main class="article-page" id="article" tabindex="-1"><p class="eyebrow">Frederic · <time datetime="${edition.date}">${new Date(edition.date + 'T12:00:00Z').toLocaleDateString(language, { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })}</time> · ${chinese ? `閱讀約 ${minutes} 分鐘 · 繁體中文` : `${minutes} min read · English`}</p>
 <div class="article-body">${html}</div>
 <section class="article-author" aria-label="${chinese ? '關於作者' : 'About the author'}"><div><h2>${chinese ? '作者 Frederic' : 'Written by Frederic'}</h2><p>${chinese ? '我透過做產品、測試想法來探索 AI 與金融，並把過程中的心得寫下來。' : 'I build products, explore AI and finance, and write about what I learn.'}</p><a href="${prefix}about/${chinese ? 'zh/' : ''}">${chinese ? '關於我' : 'More about me'} ↗</a></div></section>
-<nav class="article-related" aria-label="${chinese ? 'pstack 系列文章' : 'More in the pstack series'}"><h2>${chinese ? '繼續閱讀' : 'Keep reading'}</h2><ul>${related}</ul></nav>
-<footer><p>${chinese ? '原文刊登於' : 'Originally published on'} <a href="${esc(edition.source)}">${new URL(edition.source).hostname}</a>${chinese ? '。本文依保存的原稿刊載。' : '. Republished from my archived copy.'}</p><a href="${prefix}#library">← ${chinese ? '回到文章列表' : 'Back to articles'}</a></footer></main></div><script src="${prefix}article-contents.js"></script></body></html>`);
+<nav class="article-related" aria-label="${chinese ? '更多文章' : 'More articles'}"><h2>${chinese ? '繼續閱讀' : 'Keep reading'}</h2><ul>${related}</ul></nav>
+<footer><p>${post.original ? (chinese ? '本文首發於 AiFi Talk。' : 'First published on AiFi Talk.') : `${chinese ? '原文刊登於' : 'Originally published on'} <a href="${esc(edition.source)}">${new URL(edition.source).hostname}</a>${chinese ? '。本文依保存的原稿刊載。' : '. Republished from my archived copy.'}`}</p><a href="${prefix}#library">← ${chinese ? '回到文章列表' : 'Back to articles'}</a></footer></main></div><script src="${prefix}article-contents.js"></script></body></html>`);
   }
 }
 

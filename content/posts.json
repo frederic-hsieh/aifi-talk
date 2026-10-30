@@ -1,5 +1,26 @@
 [
   {
+    "id": "yc-rfs-winter-2027",
+    "title": "YC Winter 2027 RFS: From Easy to Hard for a Software Builder",
+    "summary": "Eleven startup requests, explained in plain language, with practical ideas spanning AI workflows, government, infrastructure, robotics, and space.",
+    "date": "2026-10-30",
+    "source": "https://aifitalk.com/posts/yc-rfs-winter-2027/",
+    "original": true,
+    "language": "en",
+    "sourceSha256": "368f5fda4abdd3c478a23cb681f257cad51563b9a12ab72a9d6e331493bd5e71",
+    "file": "yc-rfs-winter-2027.md",
+    "image": "assets/posts/yc-rfs-winter-2027.png",
+    "imageAlt": "YC RFS Winter 2027: 11 requests. Where would you start?",
+    "zh": {
+      "title": "YC Winter 2027 RFS: From Easy to Hard for a Software Builder",
+      "summary": "從一般 software builder 的角度，理解 YC 的 11 個創業方向，再延伸到 AI workflow、政府服務、基礎建設、機器人與太空的具體點子。",
+      "file": "yc-rfs-winter-2027.zh-TW.md",
+      "sourceSha256": "b2a990514b93201a0e919f7adfeb16fc28132e072985af37fdbd2ca5ee03bfa6",
+      "source": "https://aifitalk.com/posts/yc-rfs-winter-2027/zh/",
+      "date": "2026-10-30"
+    }
+  },
+  {
     "id": "pstack-practice",
     "title": "pstack in practice: 3 cases and 5 tips for working with agents",
     "summary": "Three practical ways to use pstack: compare website prototypes before choosing a design, measure where an app is slow, and recover earlier decisions from code and chat history.",
