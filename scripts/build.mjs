@@ -48,6 +48,9 @@ for (const post of posts) {
         html = html.replace(`<td>${title}</td>`, `<td><a href="#${id}">${title}</a></td>`);
       }
     }
+    if (post.id === 'yc-rfs-winter-2027') {
+      html = html.replace(/(<h2[^>]*>Contents<\/h2>)\s*(<table class="article-outline">[\s\S]*?<\/table>)/, '<details class="article-outline-disclosure"><summary>$1</summary>$2</details>');
+    }
     const minutes = Math.max(1, Math.ceil(chinese ? (markdown.match(/[\u3400-\u9fff]/g) || []).length / 400 + markdown.split(/\s+/).length / 220 : markdown.split(/\s+/).length / 220));
     const record = records.at(-1);
     if (chinese) record.zh = { ...post.zh, url: route, length: `${minutes} min read` };

@@ -228,3 +228,12 @@ html:has(.editorial-page) { scroll-padding-top: 0; }
 .article-outline th, .article-outline td { border-bottom: 1px solid var(--line); padding: 8px 12px; text-align: left; vertical-align: top; overflow-wrap: anywhere; }
 .article-outline th:first-child, .article-outline td:first-child { width: 52px; padding-top: 18px; color: var(--muted); }
 .article-outline a { display: flex; align-items: center; min-height: 44px; color: var(--ink); text-decoration-thickness: 1px; text-underline-offset: 4px; }
+
+.article-outline-disclosure { margin: 48px 0; border-block: 1px solid var(--line); }
+.article-outline-disclosure summary { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 64px; cursor: pointer; list-style: none; }
+.article-outline-disclosure summary::-webkit-details-marker { display: none; }
+.article-outline-disclosure summary::after { content: '+'; font-size: 26px; font-weight: 400; }
+.article-outline-disclosure[open] summary::after { content: '−'; }
+.article-body .article-outline-disclosure summary h2 { margin: 0; padding: 18px 0; border: 0; font-size: 24px; }
+.article-outline-disclosure summary:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; }
+.article-outline-disclosure .article-outline { margin: 0 0 24px; }
