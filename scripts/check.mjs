@@ -25,7 +25,7 @@ assert((await readFile('dist/about/zh/index.html','utf8')).includes('我是 Fred
 assert(!home.includes('AI-generated illustration'));
 for(const post of posts) {
  const html=await readFile(`dist/posts/${post.id}/index.html`,'utf8');
- assert(html.includes(`content="https://aifi-talk.vercel.app/${post.image}"`));
+ assert(html.includes(`content="https://aifitalk.com/${post.image}"`));
  assert(html.includes('application/ld+json'));
  assert(html.includes('article-author'));
  assert.equal((html.match(/<li><a href="\.\.\/pstack-/g)||[]).length,posts.length-1);

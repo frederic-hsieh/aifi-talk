@@ -81,25 +81,15 @@ Home → Choose a list → View todos → Add, edit, or complete a todo
 
 The entry for “Add a todo” can then describe:
 
-- 
+- **Entry point:** Open a list and choose “Add todo.”
 
-**Entry point:** Open a list and choose “Add todo.”
+- **Action:** Enter the text and click “Add.”
 
-- 
+- **Expected behavior:** One todo appears in the current list and remains after a reload.
 
-**Action:** Enter the text and click “Add.”
+- **Tools:** The corresponding add, reload, and list commands.
 
-- 
-
-**Expected behavior:** One todo appears in the current list and remains after a reload.
-
-- 
-
-**Tools:** The corresponding add, reload, and list commands.
-
-- 
-
-**Limits:** This flow hasn’t been checked with other accounts or devices.
+- **Limits:** This flow hasn’t been checked with other accounts or devices.
 
 For a person, the map shows how features connect and helps reveal paths an agent may have missed. For an agent, it provides context the next session can reuse instead of exploring the app from scratch.
 
@@ -115,17 +105,11 @@ Does “successfully added” mean the todo appears immediately, or that it surv
 
 For this example, the acceptance criteria are:
 
-1. 
+1. Clicking “Add” once creates exactly one “Buy milk” todo.
 
-Clicking “Add” once creates exactly one “Buy milk” todo.
+2. That todo remains after reloading the page.
 
-2. 
-
-That todo remains after reloading the page.
-
-3. 
-
-Other existing todos stay unchanged.
+3. Other existing todos stay unchanged.
 
 The agent finds the path in the Feature Map, uses the CLI to operate the app, and records the results against those criteria. A hypothetical failure report might look like this:
 

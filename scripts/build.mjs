@@ -1,8 +1,9 @@
-import { readFile, writeFile, mkdir, cp, rm } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { readFile, writeFile, mkdir, cp, rm, readdir } from 'node:fs/promises';
 import { marked } from 'marked';
 
 process.chdir(new URL('../', import.meta.url).pathname);
-const base = (process.env.SITE_URL || 'https://aifi-talk.vercel.app').replace(/\/$/, '');
+const base = (process.env.SITE_URL || 'https://aifitalk.com').replace(/\/$/, '');
 const posts = JSON.parse(await readFile('content/posts.json', 'utf8'));
 const esc = value => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
 const records = [];
@@ -49,7 +50,7 @@ for (const post of posts) {
     await mkdir(`dist/${route}`, { recursive: true });
     await writeFile(`dist/${route}index.html`, `<!doctype html><html lang="${language}"><head>${head(edition.title, edition.summary, url, post.image, prefix)}
 <link rel="alternate" hreflang="en" href="${articleUrl(post)}"><link rel="alternate" hreflang="zh-Hant" href="${articleUrl(post)}zh/"><script type="application/ld+json">${structured}</script></head>
-<body><a class="skip-link" href="#article">${chinese ? '跳至文章' : 'Skip to article'}</a><div class="wrap"><header><a class="logo" href="${prefix}">AiFi Talk</a><nav aria-label="${chinese ? '文章導覽' : 'Article navigation'}"><a href="${prefix}#library">${chinese ? '所有文章' : 'All articles'} ↗</a><div class="article-language" aria-label="Language"><a data-article-language="en" lang="en" aria-label="English" title="English" href="${chinese ? '../' : './'}" ${chinese ? '' : 'aria-current="page"'}>En</a><a data-article-language="zh-Hant" lang="zh-Hant" aria-label="繁體中文" title="繁體中文" href="${chinese ? './' : 'zh/'}" ${chinese ? 'aria-current="page"' : ''}>中</a></div></nav></header>
+<body class="editorial-page"><a class="skip-link" href="#article">${chinese ? '跳至文章' : 'Skip to article'}</a><div class="wrap"><header><a class="logo" href="${prefix}">AiFi Talk</a><nav aria-label="${chinese ? '文章導覽' : 'Article navigation'}"><a href="${prefix}#library">${chinese ? '所有文章' : 'All articles'} ↗</a><div class="article-language" aria-label="Language"><a data-article-language="en" lang="en" aria-label="English" title="English" href="${chinese ? '../' : './'}" ${chinese ? '' : 'aria-current="page"'}>En</a><a data-article-language="zh-Hant" lang="zh-Hant" aria-label="繁體中文" title="繁體中文" href="${chinese ? './' : 'zh/'}" ${chinese ? 'aria-current="page"' : ''}>中</a></div></nav></header>
 <main class="article-page" id="article" tabindex="-1"><p class="eyebrow">Frederic · <time datetime="${edition.date}">${new Date(edition.date + 'T12:00:00Z').toLocaleDateString(language, { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })}</time> · ${chinese ? `閱讀約 ${minutes} 分鐘 · 繁體中文` : `${minutes} min read · English`}</p>
 <div class="article-body">${html}</div>
 <section class="article-author" aria-label="${chinese ? '關於作者' : 'About the author'}"><div><h2>${chinese ? '作者 Frederic' : 'Written by Frederic'}</h2><p>${chinese ? '我透過做產品、測試想法來探索 AI 與金融，並把過程中的心得寫下來。' : 'I build products, explore AI and finance, and write about what I learn.'}</p><a href="${prefix}about/${chinese ? 'zh/' : ''}">${chinese ? '關於我' : 'More about me'} ↗</a></div></section>
@@ -85,3 +86,17 @@ for (const page of aboutEditions) {
 
 await writeFile('dist/.nojekyll', '');
 console.log(`Built ${posts.length} articles for ${base}`);
+
+// Fingerprinted CSS prevents stale styles after a rebuild or deployment.
+for (const name of ['tokens', 'style']) {
+  const css = await readFile(`dist/${name}.css`, 'utf8');
+  const hash = createHash('sha256').update(css).digest('hex').slice(0, 10);
+  const versioned = `${name}.${hash}.css`;
+  await writeFile(`dist/${versioned}`, css);
+  for (const file of await readdir('dist', { recursive: true })) {
+    if (!file.endsWith('.html')) continue;
+    const path = `dist/${file}`;
+    const html = await readFile(path, 'utf8');
+    await writeFile(path, html.replaceAll(`${name}.css"`, `${versioned}"`));
+  }
+}

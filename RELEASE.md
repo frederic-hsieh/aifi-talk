@@ -1,6 +1,8 @@
 # AiFi Talk
 
-Public editorial website: https://aifi-talk.vercel.app/
+Public editorial website: https://aifitalk.com/
+
+Vercel fallback: https://aifi-talk.vercel.app/
 
 Run `npm ci`, `npm run build`, then `npm test`. Serve `dist/` with a static HTTP server. Push to `main` to deploy through the connected Vercel project. GitHub Actions is not required.
 
