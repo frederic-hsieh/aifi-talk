@@ -237,3 +237,12 @@ html:has(.editorial-page) { scroll-padding-top: 0; }
 .article-body .article-outline-disclosure summary h2 { margin: 0; padding: 18px 0; border: 0; font-size: 24px; }
 .article-outline-disclosure summary:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; }
 .article-outline-disclosure .article-outline { margin: 0 0 24px; }
+
+/* Approved soft AiFi wordmark; compact af is reserved for the favicon. */
+.logo { display: inline-flex; align-items: center; flex-shrink: 0; line-height: 1; }
+.aifi-wordmark { display: block; width: 116px; height: auto; mix-blend-mode: multiply; }
+footer .aifi-wordmark { width: 96px; }
+@media (max-width: 560px) {
+  .aifi-wordmark { width: 94px; }
+  .editorial-page header .aifi-wordmark { width: 82px; }
+}
