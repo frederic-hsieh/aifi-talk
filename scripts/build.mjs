@@ -94,6 +94,27 @@ for (const page of aboutEditions) {
   await writeFile(`dist/${page.dir}/index.html`, `<!doctype html><html lang="${page.lang}"><head>${head(page.title, page.paragraphs[0], `${base}/${page.dir}/`, 'assets/posts/pstack-03-blueprint-cover.png', page.prefix, 'website')}</head><body class="editorial-page"><div class="wrap"><header><a class="logo" href="${page.prefix}">AiFi Talk</a><nav aria-label="Navigation"><a href="${page.prefix}">${page.back}</a><div class="article-language" aria-label="Language"><a href="${page.lang === 'en' ? './' : '../'}" lang="en" aria-label="English" title="English" ${page.lang === 'en' ? 'aria-current="page"' : ''}>En</a><a href="${page.lang === 'en' ? 'zh/' : './'}" lang="zh-Hant" aria-label="繁體中文" title="繁體中文" ${page.lang === 'zh-Hant' ? 'aria-current="page"' : ''}>中</a></div></nav></header><main class="article-page about-page"><p class="eyebrow">${page.eyebrow}</p><h1>${page.greeting}</h1>${page.paragraphs.map(text=>`<p>${text}</p>`).join('')}<p class="about-projects">Bloomtrade · SupWallet</p><a class="text-link" href="${page.prefix}#library">${page.link}</a></main></div></body></html>`);
 }
 
+// Apply the same external-link behavior to every generated page, including source credits.
+async function prepareExternalLinks(directory) {
+  for (const entry of await readdir(directory, { withFileTypes: true })) {
+    const path = `${directory}/${entry.name}`;
+    if (entry.isDirectory()) await prepareExternalLinks(path);
+    else if (entry.name.endsWith('.html')) {
+      const html = await read(path);
+      const updated = html.replace(/<a\b[^>]*>/g, tag => {
+        const href = tag.match(/\bhref="([^"]+)"/)?.[1];
+        if (!href) return tag;
+        const url = new URL(href.replaceAll('&amp;', '&'), base);
+        if (!['http:', 'https:'].includes(url.protocol) || url.origin === new URL(base).origin) return tag;
+        const clean = tag.replace(/\s(?:target|rel)="[^"]*"/g, '');
+        return clean.replace(/>$/, ' target="_blank" rel="noopener noreferrer">');
+      });
+      await writeFile(path, updated);
+    }
+  }
+}
+await prepareExternalLinks('dist');
+
 await writeFile('dist/.nojekyll', '');
 console.log(`Built ${posts.length} articles for ${base}`);
 
