@@ -43,7 +43,7 @@ for (const [id, image] of Object.entries(approvedCovers)) {
  const bytes = await readFile(`dist/${image}`);
  assert.equal(bytes.subarray(1,4).toString(), 'PNG', `${id}: expected a PNG cover`);
  const width = bytes.readUInt32BE(16), height = bytes.readUInt32BE(20);
- assert(width / height > 1.7 && width / height < 2, `${id}: unexpected source proportions (${width} × ${height}); review before publishing`);
+ assert(Math.abs(width / height - 16 / 9) < 0.01, `${id}: unexpected source proportions (${width} × ${height}); review before publishing`);
  assert(home.includes(`src="${image}"`), `${id}: cover missing from rendered homepage`);
  const article = await readFile(`dist/posts/${id}/index.html`, 'utf8');
  assert(article.includes(`src="../../${image}"`), `${id}: selected cover missing from reading page`);
