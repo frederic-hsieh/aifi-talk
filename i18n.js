@@ -1,5 +1,6 @@
 const messages = {
   "en": {
+    "assets": "Assets",
     "savedLocation": "Saved on this browser",
     "magazine": "Magazine",
     "library": "Library",
@@ -60,6 +61,7 @@ const messages = {
     "aboutLink": "A little about me"
   },
   "zh-Hant": {
+    "assets": "品牌資源",
     "savedLocation": "儲存在這個瀏覽器的收藏",
     "magazine": "雜誌",
     "library": "內容庫",

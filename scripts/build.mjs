@@ -1,3 +1,4 @@
+import { buildAssetsPage } from './assets-page.mjs';
 import { createHash } from 'node:crypto';
 import { readFile, writeFile, mkdir, cp, rm, readdir } from 'node:fs/promises';
 import { marked } from 'marked';
@@ -82,7 +83,7 @@ homepage = homepage.replace('</head>', `${metadata}</head>`)
 await writeFile('dist/index.html', homepage);
 await writeFile('dist/posts/index.html', `<!doctype html><html lang="en"><head>${head('Articles', 'Notes on AI, money, and making things.', `${base}/posts/`, 'assets/posts/pstack-03-blueprint-cover.png', '../', 'website')}</head><body><main class="article-page"><a class="logo" href="../"><img class="aifi-wordmark" src="../assets/brand/aifi-wordmark.png" width="480" height="250" alt="AiFi"></a><h1>Articles</h1>${posts.map(post => `<h2><a href="${post.id}/">${esc(post.title)}</a></h2><p>${esc(post.summary)}</p>`).join('')}</main></body></html>`);
 await writeFile('dist/feed.xml', `<?xml version="1.0" encoding="utf-8"?><rss version="2.0"><channel><title>AiFi Talk</title><link>${base}/</link><description>AI, money, and making things.</description>${posts.map(post => `<item><title>${esc(post.title)}</title><link>${articleUrl(post)}</link><guid>${articleUrl(post)}</guid><description>${esc(post.summary)}</description><pubDate>${new Date(post.date + 'T12:00:00Z').toUTCString()}</pubDate></item>`).join('')}</channel></rss>`);
-await writeFile('dist/sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${['/', '/posts/', '/about/', '/about/zh/', ...posts.flatMap(post => [`/posts/${post.id}/`, `/posts/${post.id}/zh/`])].map(path => `<url><loc>${base}${path}</loc></url>`).join('')}</urlset>`);
+await writeFile('dist/sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${['/', '/posts/', '/about/', '/about/zh/', '/assets/', ...posts.flatMap(post => [`/posts/${post.id}/`, `/posts/${post.id}/zh/`])].map(path => `<url><loc>${base}${path}</loc></url>`).join('')}</urlset>`);
 await writeFile('dist/robots.txt', `User-agent: *\nAllow: /\nSitemap: ${base}/sitemap.xml\n`);
 
 const aboutEditions = [
@@ -94,13 +95,19 @@ for (const page of aboutEditions) {
   await writeFile(`dist/${page.dir}/index.html`, `<!doctype html><html lang="${page.lang}"><head>${head(page.title, page.paragraphs[0], `${base}/${page.dir}/`, 'assets/posts/pstack-03-blueprint-cover.png', page.prefix, 'website')}</head><body class="editorial-page"><div class="wrap"><header><a class="logo" href="${page.prefix}"><img class="aifi-wordmark" src="${page.prefix}assets/brand/aifi-wordmark.png" width="480" height="250" alt="AiFi"></a><nav aria-label="Navigation"><a href="${page.prefix}">${page.back}</a><div class="article-language" aria-label="Language"><a href="${page.lang === 'en' ? './' : '../'}" lang="en" aria-label="English" title="English" ${page.lang === 'en' ? 'aria-current="page"' : ''}>En</a><a href="${page.lang === 'en' ? 'zh/' : './'}" lang="zh-Hant" aria-label="繁體中文" title="繁體中文" ${page.lang === 'zh-Hant' ? 'aria-current="page"' : ''}>中</a></div></nav></header><main class="article-page about-page"><p class="eyebrow">${page.eyebrow}</p><h1>${page.greeting}</h1>${page.paragraphs.map(text=>`<p>${text}</p>`).join('')}<p class="about-projects">Bloomtrade · SupWallet</p><a class="text-link" href="${page.prefix}#library">${page.link}</a></main></div></body></html>`);
 }
 
+await buildAssetsPage(head, base);
+
 // Apply the same external-link behavior to every generated page, including source credits.
 async function prepareExternalLinks(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
     const path = `${directory}/${entry.name}`;
     if (entry.isDirectory()) await prepareExternalLinks(path);
     else if (entry.name.endsWith('.html')) {
-      const html = (await read(path)).replace('</body>', `<script src="${'../'.repeat(path.split('/').length - 2)}header.js"></script></body>`);
+      const source = await read(path);
+      const chinese = source.includes('lang="zh-Hant"');
+      const assetLink = `<a class="assets-footer-link" href="${'../'.repeat(path.split('/').length - 2)}assets/" data-i18n="assets">${chinese ? '品牌資源' : 'Assets'}</a>`;
+      const withAssets = source.includes('<footer') ? source.replace('</footer>', `${assetLink}</footer>`) : source.replace('</main>', `</main><footer>${assetLink}</footer>`);
+      const html = withAssets.replace('</body>', `<script src="${'../'.repeat(path.split('/').length - 2)}header.js"></script></body>`);
       const updated = html.replace(/<a\b[^>]*>/g, tag => {
         const href = tag.match(/\bhref="([^"]+)"/)?.[1];
         if (!href) return tag;
