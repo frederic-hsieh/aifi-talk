@@ -247,6 +247,64 @@ footer .aifi-wordmark { width: 96px; }
   .editorial-page header .aifi-wordmark { width: 82px; }
 }
 
+/* One article surface, with the save control above the stretched title link. */
+.card, body[data-view=library] .card {
+  padding: 22px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  isolation: isolate;
+  transition: background-color .2s ease, border-color .2s ease, transform .2s ease;
+}
+.grid .card::after { display: none; }
+.card-link::after { content: ''; position: absolute; inset: 0; z-index: 1; }
+.card .bookmark { position: relative; z-index: 2; min-width: 44px; min-height: 44px; }
+.card:has(.card-link:focus-visible) { outline: 3px solid var(--orange); outline-offset: 4px; }
+.card .card-link:focus-visible { outline: none; }
+.card-art:hover img { transform: none; }
+body[data-view=library] .card { margin-top: 16px; }
+@media (hover: hover) and (pointer: fine) {
+  .card:hover { background: #eeede6; border-color: #aaa79c; transform: translateY(-3px); }
+  .card:hover .card-link { color: var(--orange); }
+}
+@media (prefers-reduced-motion: reduce) { .card:hover { transform: none; } }
+@media (max-width: 560px) {
+  .card, body[data-view=library] .card { padding: 16px; }
+}
+
+/* Keep the original mark and complete the publication name with live text. */
+.logo { gap: 3px; align-items: flex-start; }
+.logo-talk { margin-top: 5px; font: 500 15px/1 'Outfit', Arial, sans-serif; letter-spacing: -.4px; }
+footer .logo-talk { font-size: 13px; margin-top: 4px; }
+.card .card-art { grid-row: 1; margin-bottom: 20px; }
+.card h3 { grid-row: 2; }
+.card .meta { grid-row: 3; margin: 14px 0 0; }
+.card p { grid-row: 4; margin: 12px 0 20px; }
+.feature-copy .meta { margin-bottom: 14px; }
+body[data-view=library] .card h3 { grid-row: 1; }
+body[data-view=library] .card .meta { grid-row: 2; margin: 10px 0; }
+body[data-view=library] .card p { grid-row: 3; }
+body[data-view=library] .card-art { grid-row: 1 / 4; margin-bottom: 0; }
+@media (max-width: 560px) {
+  .logo { gap: 3px; }
+  .logo-talk { font-size: 13px; margin-top: 4px; }
+  .editorial-page header .logo-talk { font-size: 12px; margin-top: 3px; }
+  body[data-view=library] .card { grid-template-columns: 1fr; grid-template-rows: repeat(5,auto); }
+  body[data-view=library] .card .card-art,
+  body[data-view=library] .card h3,
+  body[data-view=library] .card .meta,
+  body[data-view=library] .card p,
+  body[data-view=library] .card .card-bottom { grid-column: 1; }
+  body[data-view=library] .card-art { grid-row: 1; margin-bottom: 20px; }
+  body[data-view=library] .card h3 { grid-row: 2; }
+  body[data-view=library] .card .meta { grid-row: 3; }
+  body[data-view=library] .card p { grid-row: 4; display: block; }
+  body[data-view=library] .card-bottom { grid-row: 5; }
+}
+
+/* Full generated publication mark is reserved for the homepage header. */
+.aifi-talk-wordmark { display: block; width: 170px; height: auto; }
+@media (max-width: 560px) { .aifi-talk-wordmark { width: 140px; } }
+
 /* Compact mobile navigation; desktop keeps the existing inline controls. */
 .header-navigation { display: contents; }
 .header-toggle { display: none; }

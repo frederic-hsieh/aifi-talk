@@ -60,7 +60,7 @@ for (const post of posts) {
     await mkdir(`dist/${route}`, { recursive: true });
     await writeFile(`dist/${route}index.html`, `<!doctype html><html lang="${language}"><head>${head(edition.title, edition.summary, url, post.image, prefix)}
 <link rel="alternate" hreflang="en" href="${articleUrl(post)}"><link rel="alternate" hreflang="zh-Hant" href="${articleUrl(post)}zh/"><script type="application/ld+json">${structured}</script></head>
-<body class="editorial-page"><a class="skip-link" href="#article">${chinese ? '跳至文章' : 'Skip to article'}</a><div class="wrap"><header><a class="logo" href="${prefix}"><img class="aifi-wordmark" src="${prefix}assets/brand/aifi-wordmark.png" width="480" height="250" alt="AiFi Talk"></a><nav aria-label="${chinese ? '文章導覽' : 'Article navigation'}"><a href="${prefix}#library">${chinese ? '所有文章' : 'All articles'} ↗</a><div class="article-language" aria-label="Language"><a data-article-language="en" lang="en" aria-label="English" title="English" href="${chinese ? '../' : './'}" ${chinese ? '' : 'aria-current="page"'}>En</a><a data-article-language="zh-Hant" lang="zh-Hant" aria-label="繁體中文" title="繁體中文" href="${chinese ? './' : 'zh/'}" ${chinese ? 'aria-current="page"' : ''}>中</a></div></nav></header>
+<body class="editorial-page"><a class="skip-link" href="#article">${chinese ? '跳至文章' : 'Skip to article'}</a><div class="wrap"><header><a class="logo" href="${prefix}"><img class="aifi-wordmark" src="${prefix}assets/brand/aifi-wordmark.png" width="480" height="250" alt="AiFi"></a><nav aria-label="${chinese ? '文章導覽' : 'Article navigation'}"><a href="${prefix}#library">${chinese ? '所有文章' : 'All articles'} ↗</a><div class="article-language" aria-label="Language"><a data-article-language="en" lang="en" aria-label="English" title="English" href="${chinese ? '../' : './'}" ${chinese ? '' : 'aria-current="page"'}>En</a><a data-article-language="zh-Hant" lang="zh-Hant" aria-label="繁體中文" title="繁體中文" href="${chinese ? './' : 'zh/'}" ${chinese ? 'aria-current="page"' : ''}>中</a></div></nav></header>
 <main class="article-page" id="article" tabindex="-1"><p class="eyebrow">Frederic · <time datetime="${edition.date}">${new Date(edition.date + 'T12:00:00Z').toLocaleDateString(language, { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })}</time> · ${chinese ? `閱讀約 ${minutes} 分鐘 · 繁體中文` : `${minutes} min read · English`}</p>
 <div class="article-body">${html}</div>
 <section class="article-author" aria-label="${chinese ? '關於作者' : 'About the author'}"><div><h2>${chinese ? '作者 Frederic' : 'Written by Frederic'}</h2><p>${chinese ? '我透過做產品、測試想法來探索 AI 與金融，並把過程中的心得寫下來。' : 'I build products, explore AI and finance, and write about what I learn.'}</p><a href="${prefix}about/${chinese ? 'zh/' : ''}">${chinese ? '關於我' : 'More about me'} ↗</a></div></section>
@@ -78,9 +78,9 @@ homepage = homepage.replace('</head>', `${metadata}</head>`)
   .replace(/<a([^>]*id="featured-title"[^>]*)><\/a>/, `<a id="featured-title" href="${featured.url}" lang="en">${esc(featured.title)}</a>`)
   .replace('<p id="featured-summary"></p>', `<p id="featured-summary" lang="en">${esc(featured.summary)}</p>`)
   .replace(/id="featured-link" href="[^"]*"/, `id="featured-link" href="${featured.url}"`)
-  .replace('<div class="grid" id="cards"></div>', `<div class="grid" id="cards">${records.map(post => `<article class="card"><div class="meta">Article · AI &amp; building</div><h3><a href="${post.url}">${esc(post.title)}</a></h3><p>${esc(post.summary)}</p><a class="cover card-art" href="${post.url}" aria-label="Read ${esc(post.title)}"><img src="${post.image}" alt="" loading="lazy"></a><div class="card-bottom">${post.date} · ${post.length}</div></article>`).join('')}</div>`);
+  .replace('<div class="grid" id="cards"></div>', `<div class="grid" id="cards">${records.map(post => `<article class="card"><div class="cover card-art"><img src="${post.image}" alt="" loading="lazy"></div><h3><a class="card-link" href="${post.url}">${esc(post.title)}</a></h3><div class="meta">Article · AI &amp; building</div><p>${esc(post.summary)}</p><div class="card-bottom">${post.date} · ${post.length}</div></article>`).join('')}</div>`);
 await writeFile('dist/index.html', homepage);
-await writeFile('dist/posts/index.html', `<!doctype html><html lang="en"><head>${head('Articles', 'Notes on AI, money, and making things.', `${base}/posts/`, 'assets/posts/pstack-03-blueprint-cover.png', '../', 'website')}</head><body><main class="article-page"><a class="logo" href="../"><img class="aifi-wordmark" src="../assets/brand/aifi-wordmark.png" width="480" height="250" alt="AiFi Talk"></a><h1>Articles</h1>${posts.map(post => `<h2><a href="${post.id}/">${esc(post.title)}</a></h2><p>${esc(post.summary)}</p>`).join('')}</main></body></html>`);
+await writeFile('dist/posts/index.html', `<!doctype html><html lang="en"><head>${head('Articles', 'Notes on AI, money, and making things.', `${base}/posts/`, 'assets/posts/pstack-03-blueprint-cover.png', '../', 'website')}</head><body><main class="article-page"><a class="logo" href="../"><img class="aifi-wordmark" src="../assets/brand/aifi-wordmark.png" width="480" height="250" alt="AiFi"></a><h1>Articles</h1>${posts.map(post => `<h2><a href="${post.id}/">${esc(post.title)}</a></h2><p>${esc(post.summary)}</p>`).join('')}</main></body></html>`);
 await writeFile('dist/feed.xml', `<?xml version="1.0" encoding="utf-8"?><rss version="2.0"><channel><title>AiFi Talk</title><link>${base}/</link><description>AI, money, and making things.</description>${posts.map(post => `<item><title>${esc(post.title)}</title><link>${articleUrl(post)}</link><guid>${articleUrl(post)}</guid><description>${esc(post.summary)}</description><pubDate>${new Date(post.date + 'T12:00:00Z').toUTCString()}</pubDate></item>`).join('')}</channel></rss>`);
 await writeFile('dist/sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${['/', '/posts/', '/about/', '/about/zh/', ...posts.flatMap(post => [`/posts/${post.id}/`, `/posts/${post.id}/zh/`])].map(path => `<url><loc>${base}${path}</loc></url>`).join('')}</urlset>`);
 await writeFile('dist/robots.txt', `User-agent: *\nAllow: /\nSitemap: ${base}/sitemap.xml\n`);
@@ -91,7 +91,7 @@ const aboutEditions = [
 ];
 for (const page of aboutEditions) {
   await mkdir(`dist/${page.dir}`, {recursive:true});
-  await writeFile(`dist/${page.dir}/index.html`, `<!doctype html><html lang="${page.lang}"><head>${head(page.title, page.paragraphs[0], `${base}/${page.dir}/`, 'assets/posts/pstack-03-blueprint-cover.png', page.prefix, 'website')}</head><body class="editorial-page"><div class="wrap"><header><a class="logo" href="${page.prefix}"><img class="aifi-wordmark" src="${page.prefix}assets/brand/aifi-wordmark.png" width="480" height="250" alt="AiFi Talk"></a><nav aria-label="Navigation"><a href="${page.prefix}">${page.back}</a><div class="article-language" aria-label="Language"><a href="${page.lang === 'en' ? './' : '../'}" lang="en" aria-label="English" title="English" ${page.lang === 'en' ? 'aria-current="page"' : ''}>En</a><a href="${page.lang === 'en' ? 'zh/' : './'}" lang="zh-Hant" aria-label="繁體中文" title="繁體中文" ${page.lang === 'zh-Hant' ? 'aria-current="page"' : ''}>中</a></div></nav></header><main class="article-page about-page"><p class="eyebrow">${page.eyebrow}</p><h1>${page.greeting}</h1>${page.paragraphs.map(text=>`<p>${text}</p>`).join('')}<p class="about-projects">Bloomtrade · SupWallet</p><a class="text-link" href="${page.prefix}#library">${page.link}</a></main></div></body></html>`);
+  await writeFile(`dist/${page.dir}/index.html`, `<!doctype html><html lang="${page.lang}"><head>${head(page.title, page.paragraphs[0], `${base}/${page.dir}/`, 'assets/posts/pstack-03-blueprint-cover.png', page.prefix, 'website')}</head><body class="editorial-page"><div class="wrap"><header><a class="logo" href="${page.prefix}"><img class="aifi-wordmark" src="${page.prefix}assets/brand/aifi-wordmark.png" width="480" height="250" alt="AiFi"></a><nav aria-label="Navigation"><a href="${page.prefix}">${page.back}</a><div class="article-language" aria-label="Language"><a href="${page.lang === 'en' ? './' : '../'}" lang="en" aria-label="English" title="English" ${page.lang === 'en' ? 'aria-current="page"' : ''}>En</a><a href="${page.lang === 'en' ? 'zh/' : './'}" lang="zh-Hant" aria-label="繁體中文" title="繁體中文" ${page.lang === 'zh-Hant' ? 'aria-current="page"' : ''}>中</a></div></nav></header><main class="article-page about-page"><p class="eyebrow">${page.eyebrow}</p><h1>${page.greeting}</h1>${page.paragraphs.map(text=>`<p>${text}</p>`).join('')}<p class="about-projects">Bloomtrade · SupWallet</p><a class="text-link" href="${page.prefix}#library">${page.link}</a></main></div></body></html>`);
 }
 
 // Apply the same external-link behavior to every generated page, including source credits.
@@ -118,16 +118,16 @@ await prepareExternalLinks('dist');
 await writeFile('dist/.nojekyll', '');
 console.log(`Built ${posts.length} articles for ${base}`);
 
-// Fingerprinted CSS prevents stale styles after a rebuild or deployment.
-for (const name of ['tokens', 'style']) {
-  const css = await readFile(`dist/${name}.css`, 'utf8');
+// Fingerprinted assets prevent stale presentation after a rebuild or deployment.
+for (const [name, extension] of [['tokens', 'css'], ['style', 'css'], ['app', 'js'], ['header', 'js']]) {
+  const css = await readFile(`dist/${name}.${extension}`, 'utf8');
   const hash = createHash('sha256').update(css).digest('hex').slice(0, 10);
-  const versioned = `${name}.${hash}.css`;
+  const versioned = `${name}.${hash}.${extension}`;
   await writeFile(`dist/${versioned}`, css);
   for (const file of await readdir('dist', { recursive: true })) {
     if (!file.endsWith('.html')) continue;
     const path = `dist/${file}`;
     const html = await readFile(path, 'utf8');
-    await writeFile(path, html.replaceAll(`${name}.css"`, `${versioned}"`));
+    await writeFile(path, html.replaceAll(`${name}.${extension}"`, `${versioned}"`));
   }
 }
