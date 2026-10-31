@@ -19,7 +19,7 @@ function head(title, description, url, image, prefix = '../../', type = 'article
 
 await rm('dist', { recursive: true, force: true });
 await mkdir('dist/posts', { recursive: true });
-for (const file of ['index.html', 'style.css', 'tokens.css', 'app.js', 'i18n.js', 'article-contents.js']) {
+for (const file of ['header.js', 'index.html', 'style.css', 'tokens.css', 'app.js', 'i18n.js', 'article-contents.js']) {
   await cp(file, `dist/${file}`, { recursive: true });
 }
 
@@ -100,7 +100,7 @@ async function prepareExternalLinks(directory) {
     const path = `${directory}/${entry.name}`;
     if (entry.isDirectory()) await prepareExternalLinks(path);
     else if (entry.name.endsWith('.html')) {
-      const html = await read(path);
+      const html = (await read(path)).replace('</body>', `<script src="${'../'.repeat(path.split('/').length - 2)}header.js"></script></body>`);
       const updated = html.replace(/<a\b[^>]*>/g, tag => {
         const href = tag.match(/\bhref="([^"]+)"/)?.[1];
         if (!href) return tag;
