@@ -6,7 +6,8 @@ export async function buildAssetsPage(head, base) {
   const assets = [
     ['aifi-talk-curved.png', 'AiFi Talk', 'Homepage header · 首頁標誌'],
     ['aifi-wordmark.png', 'AiFi', 'Other pages and footer · 其他頁面與頁尾'],
-    ['favicon-32.png', 'af favicon', 'Browser icon · 瀏覽器圖示'],
+    ['af-icon.png', 'af butterfly', 'Standalone icon · 品牌圖示'],
+    ['favicon-32.png', 'af butterfly favicon', 'Browser icon · 瀏覽器圖示'],
   ];
   const swatches = ['paper', 'ink', 'muted', 'line', 'orange', 'control'];
   await writeFile('dist/assets/design-standard.md', standard);
