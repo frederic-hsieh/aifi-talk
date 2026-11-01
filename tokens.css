@@ -1,2 +1,13 @@
-/* AiFi Notebook v1: shared visual tokens. Load before style.css. */
-:root{--paper:#f5f5ee;--ink:#16140f;--muted:#5c5a54;--line:#d8d7cf;--orange:#a24432;--control:#24231f;--serif:'Source Serif 4',Georgia,serif;--sans:'Outfit',Arial,sans-serif}
+/* AiFi Notebook v1: shared visual tokens. Loaded first in the site stylesheet. */
+:root {
+  --paper: #f5f5ee;
+  --paper-hover: #eeede6;
+  --ink: #16140f;
+  --muted: #5c5a54;
+  --line: #d8d7cf;
+  --line-strong: #aaa79c;
+  --orange: #a24432;
+  --control: #24231f;
+  --serif: "Source Serif 4", Georgia, serif;
+  --sans: "Outfit", Arial, sans-serif;
+}

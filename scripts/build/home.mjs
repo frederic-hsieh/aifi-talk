@@ -1,0 +1,32 @@
+import { esc, write } from './site.mjs';
+import { head, page, wordmark } from './layout.mjs';
+import { img, sizes } from './images.mjs';
+
+// English markup is served first; app.js re-renders with the saved language, filters, and saves.
+function card(story) {
+  return `<article class="card"><div class="cover card-art">${img(story.image, { size: sizes.card })}</div><h3><a class="card-link" href="${story.url}">${esc(story.title)}</a></h3><div class="meta">Article · ${esc(story.topic)}</div><p>${esc(story.summary)}</p><div class="card-bottom">${story.date} · ${story.length}</div></article>`;
+}
+
+export async function buildHome(stories) {
+  const [featured, ...archive] = stories;
+  const body = `<a class="skip-link" href="#main-content" data-i18n="skip">Skip to content</a>
+
+<div class="wrap">
+<header><div class="identity"><a class="logo" href="#" aria-label="AiFi Talk home" data-i18n-aria-label="homeLabel">${img('assets/brand/aifi-talk-curved.png', { alt: 'AiFi Talk', size: '(max-width: 800px) 82px, 170px', className: 'aifi-talk-wordmark', eager: true })}</a><p data-i18n="identity">A personal publication by Frederic.<br>AI, money, and making things.</p></div><nav aria-label="Main navigation" data-i18n-aria-label="navLabel"><a href="#library" data-nav="article" data-i18n="articles">Articles</a><details class="follow-menu"><summary title="Follow" data-i18n-title="follow" aria-label="Follow" data-i18n-aria-label="follow"><span class="ui-icon icon-connect" aria-hidden="true"></span></summary><div class="follow-popover social-links" data-socials="full"></div></details><a href="/about/" data-about-link data-i18n="about">About</a><button class="saved-link" id="saved-nav" title="Saved on this browser" data-i18n-title="savedLocation"><span class="ui-icon icon-bookmark" aria-hidden="true"></span><span class="sr-only" data-i18n="saved">Saved</span> <span id="saved-count">0</span></button></nav><div class="language-switch" role="group" aria-label="Language" data-i18n-aria-label="languageLabel"><button data-locale="en" lang="en" aria-label="English" title="English" aria-pressed="true">En</button><button data-locale="zh-Hant" lang="zh-Hant" aria-label="繁體中文" title="繁體中文" aria-pressed="false">中</button></div></header>
+<main id="main-content" tabindex="-1">
+<section class="intro"><div class="intro-copy"><div class="eyebrow" data-i18n="introEyebrow">Notes from Frederic</div><h1 data-i18n="introTitle">AI, money,<br>and making things.</h1></div><div class="intro-note"><p data-i18n="introBody">I’m Frederic. I explore AI and finance by building products, testing ideas, and sharing what I learn.</p><div class="intro-links"><a href="#library" class="text-link"><span data-i18n="exploreAifi">Explore AiFi</span> <span aria-hidden="true">↗</span></a><a href="/about/" data-about-link class="text-link"><span data-i18n="aboutLink">A little about me</span> <span aria-hidden="true">↗</span></a></div></div></section>
+<div class="editorial"><section class="featured" aria-label="Featured article" data-i18n-aria-label="featuredLabel"><div class="column-heading"><h2 data-i18n="featured">Featured article</h2><a href="#library" data-nav="article"><span data-i18n="allArticles">All articles</span> <span aria-hidden="true">↗</span></a></div><div class="featured-story"><a class="cover feature-art" id="hero-art" href="${featured.url}" aria-label="Read ${esc(featured.title)}">${img(featured.image, { size: sizes.feature, eager: true })}</a><div class="feature-copy"><h2><a id="featured-title" href="${featured.url}" lang="en">${esc(featured.title)}</a></h2><div class="meta"><span data-i18n="topicAi">AI &amp; building</span><span data-i18n="editorPick">Editor's pick</span></div><p id="featured-summary" lang="en">${esc(featured.summary)}</p><a class="text-link" id="featured-link" href="${featured.url}"><span data-i18n="readPreview">Read the article</span> <span aria-hidden="true">↗</span></a></div></div></section></div>
+
+<section class="library" id="library"><div class="section-heading"><div><div class="eyebrow" data-i18n="archiveEyebrow">Ideas, tried in practice</div><h2 data-i18n="notebook">From the notebook</h2></div><span id="result-count" role="status" aria-live="polite"></span></div><div class="controls"><div class="filters" aria-label="Filter by format" data-i18n-aria-label="formatLabel"><button data-format="all" aria-pressed="true" data-i18n="everything">Everything</button><button data-format="saved" aria-pressed="false" data-i18n="saved">Saved</button></div><div class="switch" role="group" data-i18n-aria-label="layoutLabel" aria-label="Reading layout"><button data-view="magazine" aria-pressed="true" data-i18n="magazine">Magazine</button><button data-view="library" aria-pressed="false" data-i18n="library">Library</button></div><div class="search-group"><label class="search"><span class="ui-icon icon-search" aria-hidden="true"></span><input id="search" type="search" aria-label="Search stories" data-i18n-aria-label="searchLabel" placeholder="Find something interesting" data-i18n-placeholder="searchPlaceholder"></label><select id="topic" aria-label="Filter by topic" data-i18n-aria-label="topicLabel"><option value="all" data-i18n="allTopics">All topics</option><option value="AI &amp; building" data-i18n="topicAi">AI &amp; building</option></select></div></div><div class="grid" id="cards">${archive.map(card).join('')}</div></section>
+
+
+</main><footer><a href="#top" class="logo">${wordmark('96px')}</a><div class="footer-nav social-links" data-socials="compact"></div><div class="footer-bottom"><span data-i18n="footerCopy">© 2026 Frederic · AiFi Talk</span><a class="back-top" href="#top" data-i18n-aria-label="backTop" data-i18n-title="backTop" aria-label="Back to top" title="Back to top"><span class="ui-icon icon-up" aria-hidden="true"></span></a></div><a class="assets-footer-link" href="/assets/" data-i18n="assets">Assets</a></footer></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<noscript><p>Browse the <a href="/posts/">article archive</a>.</p></noscript>`;
+  await write('index.html', page({
+    head: head({ title: 'AiFi Talk', fullTitle: 'AiFi Talk · AI, money, and making things', description: 'Articles by Frederic on AI, finance, and building with agents.', ogTitle: 'AiFi Talk · Frederic\'s field notes', ogDescription: 'AI, money, and making things. A personal publication by Frederic.', path: '/', image: featured.image, type: 'website' }),
+    bodyAttributes: 'id="top" data-view="magazine"',
+    body,
+    scripts: ['i18n.js', 'posts.js', 'app.js'],
+  }));
+}

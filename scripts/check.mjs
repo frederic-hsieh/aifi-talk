@@ -1,68 +1,55 @@
+// Build-output checks: structural guarantees only, so editing article prose never breaks the build.
 import assert from 'node:assert/strict';
-import {readFile,readdir,stat} from 'node:fs/promises';
-import path from 'node:path';
-process.chdir(new URL('../',import.meta.url).pathname);
-const posts=JSON.parse(await readFile('content/posts.json','utf8'));
-assert(posts.length > 0);
-for(const p of posts){
- const html=await readFile(`dist/posts/${p.id}/index.html`,'utf8');
- assert(html.includes(p.title)); assert(html.includes(p.source));
- assert(!html.includes('substack_draft:')); assert(!html.includes('/Users/'));
- for(const m of html.matchAll(/(?:href|src)="([^"]+)"/g)){
-  if(/^(https?:|#)/.test(m[1])) continue;
-  const target=path.resolve(`dist/posts/${p.id}`,m[1].split("#")[0]);
-  assert((await stat(target)).isFile() || (await stat(target)).isDirectory());
- }
-}
-for(const file of ['feed.xml','sitemap.xml','robots.txt','posts.js']) assert((await readFile('dist/'+file,'utf8')).length>0);
-assert(!(await readdir('dist')).includes('content'));
-console.log(`PASS: ${posts.length} full articles, source links, local asset paths, metadata files, and private-frontmatter exclusion.`);
-const home=await readFile('dist/index.html','utf8');
-assert(!home.includes('assets/author/'));
-assert(!(await readdir('dist/assets')).includes('author'));
-assert((await readFile('dist/about/index.html','utf8')).includes('I’m Frederic'));
-assert((await readFile('dist/about/zh/index.html','utf8')).includes('我是 Frederic'));
-assert(!home.includes('AI-generated illustration'));
-for(const post of posts) {
- const html=await readFile(`dist/posts/${post.id}/index.html`,'utf8');
- assert(html.includes(`content="https://aifitalk.com/${post.image}"`));
- assert(html.includes('application/ld+json'));
- assert(html.includes('article-author'));
- const related = html.match(/<nav class="article-related"[\s\S]*?<\/nav>/)?.[0] || '';
- assert.equal((related.match(/<li><a href=/g)||[]).length,posts.length-1);
-}
-console.log('PASS: no personal photos published, separate About pages, per-article share images, and related reading links.');
+import { readFile, readdir, stat } from 'node:fs/promises';
+import sharp from 'sharp';
 
-for (const post of posts) assert(home.includes(`href="posts/${post.id}/"`));
-assert(!home.includes('id="featured-title" href="posts/"></a>'));
+process.chdir(new URL('../', import.meta.url).pathname);
+const base = (process.env.SITE_URL || 'https://aifitalk.com').replace(/\/$/, '');
+const posts = JSON.parse(await readFile('content/posts.json', 'utf8'));
+const esc = value => value.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
+const exists = path => stat(path).then(() => true, () => false);
+const pages = (await readdir('dist', { recursive: true })).filter(file => file.endsWith('.html'));
+const html = Object.fromEntries(await Promise.all(pages.map(async file => [file, await readFile(`dist/${file}`, 'utf8')])));
 
-const approvedCovers = JSON.parse(await readFile('verification/covers.json', 'utf8'));
-for (const [id, image] of Object.entries(approvedCovers)) {
- const post = posts.find(post => post.id === id);
- assert(post, `Missing article: ${id}`);
- assert.equal(post.image, image, `${id}: use the reviewed series cover, not an internal diagram or platform banner`);
- const bytes = await readFile(`dist/${image}`);
- assert.equal(bytes.subarray(1,4).toString(), 'PNG', `${id}: expected a PNG cover`);
- const width = bytes.readUInt32BE(16), height = bytes.readUInt32BE(20);
- assert(Math.abs(width / height - 16 / 9) < 0.01, `${id}: unexpected source proportions (${width} × ${height}); review before publishing`);
- assert(home.includes(`src="${image}"`), `${id}: cover missing from rendered homepage`);
- const article = await readFile(`dist/posts/${id}/index.html`, 'utf8');
- assert(article.includes(`src="../../${image}"`), `${id}: selected cover missing from reading page`);
+// Every local link, image, script, and stylesheet resolves; every in-page anchor has a target.
+for (const [file, source] of Object.entries(html)) {
+  const ids = new Set([...source.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]));
+  const references = [...source.matchAll(/\b(?:href|src)="([^"]+)"/g), ...source.matchAll(/\bsrcset="([^"]+)"/g)].flatMap(match => match[1].split(', ').map(entry => entry.split(' ')[0]));
+  for (const reference of references) {
+    if (/^(https?:|mailto:)/.test(reference) || reference === '#') continue;
+    if (reference.startsWith('#')) { assert(ids.has(reference.slice(1)) || reference === '#top', `${file}: missing anchor ${reference}`); continue; }
+    assert(reference.startsWith('/'), `${file}: use a root-relative URL for ${reference}`);
+    const path = `dist${reference.split('#')[0]}`;
+    assert(await exists(path.endsWith('/') ? `${path}index.html` : path), `${file}: broken reference ${reference}`);
+  }
+  assert(!/\/Users\/|substack_draft:|source_master:|source_idea:/.test(source), `${file}: private path or source metadata leaked`);
+  for (const match of source.matchAll(/<(?:link rel="stylesheet"|script) [^>]*(?:href|src)="(\/[^"]+)"/g)) assert(match[1].startsWith('/static/'), `${file}: ${match[1]} is not fingerprinted`);
 }
-console.log('PASS: reviewed pstack series covers, source proportions, and homepage/reading-page consistency. Browser geometry requires the separate layout check.');
+assert(!(await exists('dist/content')) && !(await exists('dist/assets/author')), 'Private folders must not be published');
+console.log(`PASS: ${pages.length} pages, local references, anchors, fingerprinted CSS/JS, no private data.`);
 
-const rfs = posts.find(post => post.id === 'yc-rfs-winter-2027');
-if (rfs) {
- for (const suffix of ['', 'zh/']) {
-  const html = await readFile(`dist/posts/${rfs.id}/${suffix}index.html`, 'utf8');
-  const sections = [...html.matchAll(/<h2 id="([^"]+)" tabindex="-1">(\d+)\. ([^<]+)<\/h2>/g)];
-  assert.equal(sections.length, 11, 'All RFS sections must be present');
-  assert.equal(sections[6][3], 'Plaid for Government Benefits');
-  assert.equal(sections[7][3], 'Data Center Supply Chain');
-  for (const [, id, , title] of sections) assert(html.includes(`<a href="#${id}">${title}</a>`), 'Contents must link to each section');
-  assert.equal((html.match(/<strong>My idea/g)||[]).length, 11);
-  assert(!html.includes('source_master:') && !html.includes('source_idea:') && !html.includes('/Users/'));
-  assert(!html.includes('Republished from my archived copy') && !html.includes('本文依保存的原稿刊載'));
- }
- console.log('PASS: bilingual RFS contents, 11 sections and ideas, current order, original-publication attribution, no private metadata.');
+// Both editions of every post exist with canonical, language, share, and structured metadata.
+const home = html['index.html'];
+for (const post of posts) {
+  for (const [suffix, title] of [['', post.title], ['zh/', post.zh.title]]) {
+    const page = html[`posts/${post.id}/${suffix}index.html`];
+    assert(page, `${post.id}: missing ${suffix || 'English'} edition`);
+    assert(page.includes(`<link rel="canonical" href="${base}/posts/${post.id}/${suffix}">`), `${post.id}: canonical URL`);
+    assert(page.includes(`hreflang="zh-Hant" href="${base}/posts/${post.id}/zh/"`), `${post.id}: hreflang`);
+    assert(page.includes(`<meta property="og:image" content="${base}/assets/img/`), `${post.id}: share image`);
+    assert(page.includes(`<title>${esc(title)} · AiFi Talk</title>`) && page.includes('application/ld+json'), `${post.id}: title and structured data`);
+  }
+  assert(home.includes(`href="/posts/${post.id}/"`), `${post.id}: missing from homepage`);
 }
+const sitemap = await readFile('dist/sitemap.xml', 'utf8');
+for (const post of posts) assert(sitemap.includes(`${base}/posts/${post.id}/zh/`), `${post.id}: missing from sitemap`);
+assert((await readFile('dist/feed.xml', 'utf8')).split('<item>').length - 1 === posts.length, 'RSS has one item per post');
+assert.equal((home.match(new RegExp(`href="/posts/${posts[0].id}/"`, 'g')) || []).length, 3, 'Featured story appears only in the featured block, not the grid');
+console.log(`PASS: ${posts.length} posts in two languages with metadata, sitemap, RSS, and homepage links.`);
+
+// Banner rule: every cover is a 16:9 source image (see README).
+for (const post of posts) {
+  const { width, height } = await sharp(post.image).metadata();
+  assert(Math.abs(width / height - 16 / 9) < 0.01, `${post.id}: cover is ${width}×${height}; covers must be 16:9`);
+}
+console.log('PASS: every cover uses 16:9 source artwork.');

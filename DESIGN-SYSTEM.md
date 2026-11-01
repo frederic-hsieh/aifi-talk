@@ -21,9 +21,11 @@ AiFi Talk 採用溫暖、簡潔、以文章為主的編輯風格。保留留白�
 | Token | Value | Use |
 | --- | --- | --- |
 | `--paper` | `#f5f5ee` | Page background |
+| `--paper-hover` | `#eeede6` | Card hover background |
 | `--ink` | `#16140f` | Primary text |
 | `--muted` | `#5c5a54` | Secondary text |
 | `--line` | `#d8d7cf` | Dividers and borders |
+| `--line-strong` | `#aaa79c` | Card hover border |
 | `--orange` | `#a24432` | Links, active accents, focus |
 | `--control` | `#24231f` | Filled controls |
 
@@ -48,9 +50,10 @@ Use flat warm backgrounds, square article-card edges, and thin dividers. Spacing
 ## Article previews
 
 - Magazine cards show **photo → title → categories → summary → date and bookmark**.
+- The default Magazine grid omits the featured article shown above it. Library, search, topic filters, and Saved include every article.
 - The whole card opens its article. The bookmark remains a separate 44px control above the card link.
 - Cards have a 1px border and 22px padding, reduced to 16px below 560px.
-- Fine-pointer hover changes the background to `#eeede6`, the border to `#aaa79c`, raises the card 3px, and accents its title. Transitions last 200ms. Reduced-motion mode removes the lift.
+- Fine-pointer hover changes the background to `--paper-hover`, the border to `--line-strong`, raises the card 3px, and accents its title. Transitions last 200ms. Reduced-motion mode removes the lift.
 - Keyboard focus outlines the card in rust. Hover is never required to access content or controls.
 - Desktop Library rows place the thumbnail beside the text; mobile stacks photo, title, categories, summary, and footer.
 - Covers use a 16:9 composition (1792×1008 recommended for new exports). Preserve all artwork without cropping or stretching. Adapt mismatched artwork by extending its designed background, not adding plain bars.
@@ -77,6 +80,6 @@ The public Assets page is generated from this file during every build. Logo prev
 
 When updating the design, update this guide in the same change, including any affected values, asset usage, layout, interaction, and responsive rules. Replace the approved source assets when needed and keep the download links current. Build and verify the Assets page alongside the affected pages before deployment.
 
-Implementation sources: `tokens.css` for colors and fonts, `style.css` for components, `index.html` for homepage markup, `i18n.js` for localized copy and social links, `app.js` for story state, and `header.js` for responsive navigation. If implementation and documentation disagree, resolve the discrepancy before release.
+Implementation sources: `tokens.css` for colors and fonts, `style.css` for components, `scripts/build/home.mjs` for homepage markup, `scripts/build/layout.mjs` for shared page chrome, `i18n.js` for localized copy and social links, `app.js` for story state, and `header.js` for responsive navigation. If implementation and documentation disagree, resolve the discrepancy before release.
 
 Verify desktop and 390px layouts, English and Chinese, keyboard access, download links, and relevant reload persistence. Run the build and automated checks. Record PASS, FAIL, or NOT TESTED, with screenshots where useful.

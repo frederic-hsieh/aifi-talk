@@ -11,6 +11,8 @@
     "file": "yc-rfs-winter-2027.md",
     "image": "assets/posts/yc-rfs-winter-2027-illustrated.png",
     "imageAlt": "Requests for Startups: a builder’s path from software to robotics and a space laboratory",
+    "topic": "AI & building",
+    "outline": true,
     "zh": {
       "title": "YC Winter 2027 RFS: From Easy to Hard for a Software Builder",
       "summary": "從一般 software builder 的角度，理解 YC 的 11 個創業方向，再延伸到 AI workflow、政府服務、基礎建設、機器人與太空的具體點子。",
@@ -31,6 +33,7 @@
     "file": "pstack-practice.md",
     "image": "assets/posts/pstack-03-blueprint-cover.png",
     "imageAlt": "pstack / 03: From ideas to evidence",
+    "topic": "AI & building",
     "zh": {
       "title": "pstack 實戰：3 個案例，5 個讓 agent 更好用的技巧",
       "summary": "這篇用三個案例介紹 pstack：用 prototypes 比較網站設計，避免太早選定方向；用 baseline 和 trace 找出 app 的效能瓶頸；和利用程式與歷史對話找回先前的決策脈絡。",
@@ -51,6 +54,7 @@
     "file": "pstack-verification.md",
     "image": "assets/posts/pstack-verification-blueprint-banner.png",
     "imageAlt": "A blueprint of the pstack verification workflow",
+    "topic": "AI & building",
     "zh": {
       "title": "pstack 最重要的一環: verification skills, 讓 agent 自己驗證",
       "summary": "AI agent 已經能寫出不少程式。但寫完之後，常常還是要有人打開 app、點過一遍流程、把錯誤訊息貼回去，再確認修正有沒有生效。",
@@ -71,6 +75,7 @@
     "file": "pstack-introduction.md",
     "image": "assets/posts/pstack-01-blueprint-cover.png",
     "imageAlt": "Getting started with pstack: core concepts, setup and playbooks",
+    "topic": "AI & building",
     "zh": {
       "title": "pstack 入門：核心概念、安裝與 playbooks",
       "summary": "Grok Bot 的開發者 Lauren Tan 在 9 月 21 日的貼文中說，她上個月把 2,500 個 PR（程式修改提案）送上了 production。她是怎麼做到的？",

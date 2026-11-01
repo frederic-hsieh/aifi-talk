@@ -10,7 +10,7 @@ const state = {view:'magazine', format:'all', query:'', topic:'all', saved, loca
 const featuredStoryId = stories[0].id;
 const cards = document.querySelector('#cards');
 let toastTimer;
-const topicKeys = {'AI & building':'topicAi','Money & systems':'topicMoney','Creative process':'topicCreative'};
+const topicKeys = {'AI & building':'topicAi'};
 function t(key) { return messages[state.locale][key]; }
 function localizedStory(story) { return state.locale === 'zh-Hant' ? {...story, ...story.zh} : story; }
 function topicLabel(topic) { return t(topicKeys[topic]); }
@@ -18,14 +18,16 @@ function dateLabel(story) { return new Date(story.date+'T12:00:00').toLocaleDate
 function readingLabel(story) { return state.locale === 'zh-Hant' ? `閱讀約 ${story.length.split(' ')[0]} 分鐘` : story.length; }
 function escapeHtml(value) { return String(value).replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character])); }
 function art(story, eager = false) {
-  if (!story.image) return '';
-  return `<img src="${escapeHtml(story.image)}" alt="" width="1536" height="1024" loading="${eager ? 'eager' : 'lazy'}" decoding="async">`;
+  const {src, srcset, sizes, width, height} = story.cover;
+  return `<img src="${src}" srcset="${srcset}" sizes="${eager ? '(max-width: 800px) 100vw, 640px' : sizes}" width="${width}" height="${height}" alt="" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">`;
 }
 function notify(message) { document.querySelector('#toast').textContent = message; clearTimeout(toastTimer); toastTimer = setTimeout(() => document.querySelector('#toast').textContent = '', 3000); }
 function render() {
   const matches = stories.filter(story => {
     const translated = story.zh || story;
     const searchable = `${story.title} ${story.summary} ${story.topic} ${translated.title} ${translated.summary} ${messages['zh-Hant'][topicKeys[story.topic]]}`.toLowerCase();
+    // The default Magazine view already shows the featured story above the grid.
+    if (story.id === featuredStoryId && state.view === 'magazine' && state.format === 'all' && state.topic === 'all' && !state.query.trim()) return false;
     return (state.format === 'all' || (state.format === 'saved' ? state.saved.has(story.id) : story.kind === state.format)) && (state.topic === 'all' || story.topic === state.topic) && searchable.includes(state.query.toLowerCase().trim());
   });
   cards.innerHTML = matches.map(original => {
@@ -40,7 +42,7 @@ function render() {
 function renderLanguage() {
   document.documentElement.lang = state.locale;
   document.title = t('pageTitle');
-  document.querySelectorAll('[data-about-link]').forEach(link => { link.href = state.locale === 'zh-Hant' ? 'about/zh/' : 'about/'; });
+  document.querySelectorAll('[data-about-link]').forEach(link => { link.href = state.locale === 'zh-Hant' ? '/about/zh/' : '/about/'; });
   document.querySelector('meta[name="description"]').content = t('description');
   document.querySelectorAll('[data-i18n]').forEach(element => { element.innerHTML = t(element.dataset.i18n); });
   ['aria-label','placeholder','alt','title'].forEach(attribute => {
@@ -48,7 +50,7 @@ function renderLanguage() {
   });
   document.querySelectorAll('[data-locale]').forEach(button => button.setAttribute('aria-pressed', button.dataset.locale === state.locale));
   document.querySelectorAll('[data-socials]').forEach(group => {
-    group.innerHTML = socials.map(social => `<a class="social-link" title="${social.name} · ${social.handle}" href="${social.url}" target="_blank" rel="noopener noreferrer" aria-label="${social.name} ${social.handle}, ${t('newTab')}"><span class="brand-icon" style="--brand-icon:url(assets/icons/${social.name.toLowerCase()}.svg)" aria-hidden="true"></span></a>`).join('');
+    group.innerHTML = socials.map(social => `<a class="social-link" title="${social.name} · ${social.handle}" href="${social.url}" target="_blank" rel="noopener noreferrer" aria-label="${social.name} ${social.handle}, ${t('newTab')}"><span class="brand-icon" style="--brand-icon:url(/assets/icons/${social.name.toLowerCase()}.svg)" aria-hidden="true"></span></a>`).join('');
   });
   const featured = localizedStory(catalog.get(featuredStoryId));
   document.querySelector('#hero-art').innerHTML = art(featured, true);

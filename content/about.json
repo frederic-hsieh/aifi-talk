@@ -1,0 +1,30 @@
+{
+  "en": {
+    "dir": "about",
+    "title": "A little about me",
+    "eyebrow": "THE PERSON BEHIND AIFI",
+    "greeting": "I’m Frederic.<br>I build, then write.",
+    "paragraphs": [
+      "I’m building Bloomtrade and SupWallet. AiFi Talk is where I share the decisions, experiments, and lessons behind the work.",
+      "I explore AI and finance by building products and testing ideas. Writing helps me explain what I tried, what happened, and what I learned.",
+      "I want to make AI and finance easier to understand through something you can inspect, try, or build yourself."
+    ],
+    "projects": "Bloomtrade · SupWallet",
+    "link": "Read my notes ↗",
+    "back": "Home"
+  },
+  "zh-Hant": {
+    "dir": "about/zh",
+    "title": "關於我",
+    "eyebrow": "AIFI 背後的人",
+    "greeting": "我是 Frederic。<br>先動手做，再寫下來。",
+    "paragraphs": [
+      "我正在做 Bloomtrade 和 SupWallet。在 AiFi Talk，我會分享過程中的決策、實驗，以及學到的事。",
+      "我透過做產品、測試想法來探索 AI 與金融，並把過程中的心得寫下來。",
+      "我希望透過能仔細看、親手試，甚至自己做出來的東西，讓 AI 和金融更容易理解。"
+    ],
+    "projects": "Bloomtrade · SupWallet",
+    "link": "閱讀我的筆記 ↗",
+    "back": "首頁"
+  }
+}
