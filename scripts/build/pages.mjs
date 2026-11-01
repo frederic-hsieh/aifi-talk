@@ -11,15 +11,15 @@ export async function buildAbout() {
     const nav = `<a href="/">${about.back}</a>${languageLinks(language, { en: '/about/', 'zh-Hant': '/about/zh/' })}`;
     await write(`${about.dir}/index.html`, page({
       language,
-      head: head({ title: about.title, description: about.paragraphs[0], path: `/${about.dir}/`, image: shareImage, type: 'website', alternates: { en: '/about/', zh: '/about/zh/' } }),
-      body: `<div class="wrap">${editorialHeader('Navigation', nav)}<main class="article-page about-page"><p class="eyebrow">${about.eyebrow}</p><h1>${about.greeting}</h1>${about.paragraphs.map(text => `<p>${text}</p>`).join('')}<p class="about-projects">${about.projects}</p><a class="text-link" href="/#library">${about.link}</a></main><footer>${assetsLink(chinese)}</footer></div>`,
+      head: head({ title: about.title, description: about.body, path: `/${about.dir}/`, image: shareImage, type: 'website', alternates: { en: '/about/', zh: '/about/zh/' } }),
+      body: `<div class="wrap">${editorialHeader('Navigation', nav)}<main class="article-page about-page"><p class="eyebrow">${about.eyebrow}</p><h1>${about.heading}</h1><p>${about.body}</p><h2>${about.writerHeading}</h2>${about.writer.map(text => `<p>${text}</p>`).join('')}<p class="about-projects">${about.projects}</p><a class="text-link" href="/#library">${about.link}</a></main><footer>${assetsLink(chinese)}</footer></div>`,
     }));
   }
 }
 
 export async function buildArchive(posts) {
   await write('posts/index.html', page({
-    head: head({ title: 'Articles', description: 'Notes on AI, money, and making things.', path: '/posts/', image: shareImage, type: 'website' }),
+    head: head({ title: 'Articles', description: 'Tutorials and deep dives on new tech and money.', path: '/posts/', image: shareImage, type: 'website' }),
     body: `<div class="wrap">${editorialHeader('Navigation', '<a href="/">Home</a>')}<main class="article-page"><h1>Articles</h1>${posts.map(post => `<h2><a href="/posts/${post.id}/">${esc(post.title)}</a></h2><p>${esc(post.summary)}</p>`).join('')}</main><footer>${assetsLink(false)}</footer></div>`,
   }));
 }
@@ -44,7 +44,7 @@ export async function buildAssetsPage() {
 
 export async function buildFeeds(posts) {
   const url = post => `${base}/posts/${post.id}/`;
-  await write('feed.xml', `<?xml version="1.0" encoding="utf-8"?><rss version="2.0"><channel><title>AiFi Talk</title><link>${base}/</link><description>AI, money, and making things.</description>${posts.map(post => `<item><title>${esc(post.title)}</title><link>${url(post)}</link><guid>${url(post)}</guid><description>${esc(post.summary)}</description><pubDate>${new Date(`${post.date}T12:00:00Z`).toUTCString()}</pubDate></item>`).join('')}</channel></rss>`);
+  await write('feed.xml', `<?xml version="1.0" encoding="utf-8"?><rss version="2.0"><channel><title>AiFi Talk</title><link>${base}/</link><description>Understand new tech and money, one step at a time.</description>${posts.map(post => `<item><title>${esc(post.title)}</title><link>${url(post)}</link><guid>${url(post)}</guid><description>${esc(post.summary)}</description><pubDate>${new Date(`${post.date}T12:00:00Z`).toUTCString()}</pubDate></item>`).join('')}</channel></rss>`);
   const paths = ['/', '/posts/', '/about/', '/about/zh/', '/assets/', ...posts.flatMap(post => [`/posts/${post.id}/`, `/posts/${post.id}/zh/`])];
   await write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${paths.map(path => `<url><loc>${base}${path}</loc></url>`).join('')}</urlset>`);
   await write('robots.txt', `User-agent: *\nAllow: /\nSitemap: ${base}/sitemap.xml\n`);

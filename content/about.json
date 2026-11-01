@@ -1,29 +1,33 @@
 {
   "en": {
     "dir": "about",
-    "title": "A little about me",
-    "eyebrow": "THE PERSON BEHIND AIFI",
-    "greeting": "I’m Frederic.<br>I build, then write.",
-    "paragraphs": [
-      "I’m building Bloomtrade and SupWallet. AiFi Talk is where I share the decisions, experiments, and lessons behind the work.",
-      "I explore AI and finance by building products and testing ideas. Writing helps me explain what I tried, what happened, and what I learned.",
-      "I want to make AI and finance easier to understand through something you can inspect, try, or build yourself."
+    "title": "About AiFi",
+    "eyebrow": "ABOUT AIFI",
+    "heading": "Understand new tech and money,<br>one step at a time.",
+    "body": "AiFi explains new technology and money in plain language: step-by-step tutorials you can follow, and deep dives into how financial systems actually work.",
+    "writerHeading": "Who writes this",
+    "writer": [
+      "I’m Frederic. I try it first, then explain it.",
+      "I’m also building Bloomtrade.",
+      "If something here helps you try a new tool or understand where money goes, it did its job."
     ],
-    "projects": "Bloomtrade · SupWallet",
+    "projects": "Bloomtrade",
     "link": "Read my notes ↗",
     "back": "Home"
   },
   "zh-Hant": {
     "dir": "about/zh",
-    "title": "關於我",
-    "eyebrow": "AIFI 背後的人",
-    "greeting": "我是 Frederic。<br>先動手做，再寫下來。",
-    "paragraphs": [
-      "我正在做 Bloomtrade 和 SupWallet。在 AiFi Talk，我會分享過程中的決策、實驗，以及學到的事。",
-      "我透過做產品、測試想法來探索 AI 與金融，並把過程中的心得寫下來。",
-      "我希望透過能仔細看、親手試，甚至自己做出來的東西，讓 AI 和金融更容易理解。"
+    "title": "關於 AiFi",
+    "eyebrow": "關於 AIFI",
+    "heading": "一步一步，<br>看懂新科技與金融。",
+    "body": "AiFi 用白話介紹新科技和金融：有一步一步帶你操作的教學，也有拆解金融系統怎麼運作的深度文章。",
+    "writerHeading": "誰在寫",
+    "writer": [
+      "我是 Frederic。先親手試，再講清楚。",
+      "我也在做 Bloomtrade。",
+      "如果這裡的內容能幫你試用一個新工具，或看懂錢往哪裡流，就達到目的了。"
     ],
-    "projects": "Bloomtrade · SupWallet",
+    "projects": "Bloomtrade",
     "link": "閱讀我的筆記 ↗",
     "back": "首頁"
   }

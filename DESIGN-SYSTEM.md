@@ -1,6 +1,6 @@
 # AiFi Talk design standards
 
-AiFi Talk is a warm, personal, article-led publication about AI, money, and making things. Use a quiet editorial layout, generous whitespace, thin rules, and restrained rust accents.
+AiFi Talk is a warm, article-led publication of tutorials and deep dives on new tech and money, written by Frederic. Tagline: “Understand new tech and money, one step at a time.” / 「一步一步，看懂新科技與金融。」 Use a quiet editorial layout, generous whitespace, thin rules, and restrained rust accents.
 
 AiFi Talk 採用溫暖、簡潔、以文章為主的編輯風格。保留留白、細分隔線與低調的磚紅色點綴；設計更新時，也要同步維護這份規範。
 
