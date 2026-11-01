@@ -50,6 +50,7 @@ Use flat warm backgrounds, square article-card edges, and thin dividers. Spacing
 ## Article previews
 
 - Magazine cards show **photo → title → categories → summary → date and bookmark**.
+- The category line shows an audience label: **For builders / 給開發者** or **For founders / 給創業者**. Everyday-reader articles have no label. The topic filter selects by these audiences.
 - The default Magazine grid omits the featured article shown above it. Library, search, topic filters, and Saved include every article.
 - The whole card opens its article. The bookmark remains a separate 44px control above the card link.
 - Cards have a 1px border and 22px padding, reduced to 16px below 560px.

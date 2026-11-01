@@ -14,7 +14,7 @@ All original writing and artwork remain copyright their respective owners. This 
 
 | Path | Role |
 | --- | --- |
-| `content/posts.json` | Published posts: titles, summaries, dates, cover, `topic`, and optional `outline` (a Contents table that links to numbered sections and collapses). Chinese fields live under `zh`. |
+| `content/posts.json` | Published posts: titles, summaries, dates, cover, optional audience `topic` (`builders` or `founders`, labeled through `topicKeys` in `i18n.js`; omit for everyday readers), and optional `outline` (a Contents table that links to numbered sections and collapses). Chinese fields live under `zh`. |
 | `content/*.md`, `content/about.json` | Article editions and About copy |
 | `scripts/build.mjs` | Build entry: copies brand assets, prepares images, publishes static files, renders pages |
 | `scripts/build/` | `site.mjs` helpers and fingerprinting, `images.mjs` WebP variants, `layout.mjs` shared head/header/page, `markdown.mjs` article rendering, `article.mjs`, `home.mjs`, `pages.mjs` (About, archive, Assets, RSS, sitemap) |

@@ -11,12 +11,13 @@ const messages = {
     "introTitle": "Understand new tech and money,<br>one step at a time.",
     "introBody": "Step-by-step tutorials you can follow, and deep dives into how money really works.",
     "featured": "Featured article",
-    "topicAi": "AI & building",
+    "topicBuilders": "For builders",
+    "topicFounders": "For founders",
     "editorPick": "Latest essay",
     "notebook": "From the notebook",
     "everything": "Everything",
     "saved": "Saved",
-    "allTopics": "All topics",
+    "allTopics": "All readers",
     "footerCopy": "© 2026 Frederic · AiFi Talk",
     "exploreAifi": "Explore AiFi",
     "allArticles": "All articles",
@@ -28,7 +29,7 @@ const messages = {
     "formatLabel": "Filter by format",
     "searchLabel": "Search stories",
     "searchPlaceholder": "Find something interesting",
-    "topicLabel": "Filter by topic",
+    "topicLabel": "Filter by reader",
     "skip": "Skip to content",
     "follow": "Follow",
     "languageLabel": "Language",
@@ -62,12 +63,13 @@ const messages = {
     "introTitle": "一步一步，<br>看懂新科技與金融。",
     "introBody": "跟著做就會的教學，加上拆解金融怎麼運作的深度文章。",
     "featured": "精選文章",
-    "topicAi": "AI 與實作",
+    "topicBuilders": "給開發者",
+    "topicFounders": "給創業者",
     "editorPick": "最新文章",
     "notebook": "筆記裡的新內容",
     "everything": "全部",
     "saved": "已收藏",
-    "allTopics": "所有主題",
+    "allTopics": "所有讀者",
     "footerCopy": "© 2026 Frederic · AiFi Talk",
     "exploreAifi": "探索 AiFi",
     "allArticles": "所有文章",
@@ -79,7 +81,7 @@ const messages = {
     "formatLabel": "依內容類型篩選",
     "searchLabel": "搜尋內容",
     "searchPlaceholder": "找找感興趣的內容",
-    "topicLabel": "依主題篩選",
+    "topicLabel": "依讀者篩選",
     "skip": "跳到主要內容",
     "follow": "追蹤我",
     "languageLabel": "語言",
@@ -102,6 +104,8 @@ const messages = {
     "aboutLink": "關於 AiFi"
   }
 };
+// Audience labels: a post's `topic` in content/posts.json names one of these. Everyday-reader posts have no topic.
+const topicKeys = {builders:'topicBuilders', founders:'topicFounders'};
 const socials = [
   {name:'YouTube',handle:'@frederichhh',url:'https://www.youtube.com/@frederichhh'},
   {name:'Threads',handle:'@frede.richhh',url:'https://www.threads.com/@frede.richhh'},

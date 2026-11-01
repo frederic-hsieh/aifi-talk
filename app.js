@@ -10,10 +10,9 @@ const state = {view:'magazine', format:'all', query:'', topic:'all', saved, loca
 const featuredStoryId = stories[0].id;
 const cards = document.querySelector('#cards');
 let toastTimer;
-const topicKeys = {'AI & building':'topicAi'};
 function t(key) { return messages[state.locale][key]; }
 function localizedStory(story) { return state.locale === 'zh-Hant' ? {...story, ...story.zh} : story; }
-function topicLabel(topic) { return t(topicKeys[topic]); }
+function topicLabel(topic) { return topic ? t(topicKeys[topic]) : ''; }
 function dateLabel(story) { return new Date(story.date+'T12:00:00').toLocaleDateString(state.locale, {year:'numeric',month:'short',day:'numeric'}); }
 function readingLabel(story) { return state.locale === 'zh-Hant' ? `閱讀約 ${story.length.split(' ')[0]} 分鐘` : story.length; }
 function escapeHtml(value) { return String(value).replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character])); }
@@ -25,14 +24,14 @@ function notify(message) { document.querySelector('#toast').textContent = messag
 function render() {
   const matches = stories.filter(story => {
     const translated = story.zh || story;
-    const searchable = `${story.title} ${story.summary} ${story.topic} ${translated.title} ${translated.summary} ${messages['zh-Hant'][topicKeys[story.topic]]}`.toLowerCase();
+    const searchable = `${story.title} ${story.summary} ${translated.title} ${translated.summary} ${story.topic ? `${messages.en[topicKeys[story.topic]]} ${messages['zh-Hant'][topicKeys[story.topic]]}` : ''}`.toLowerCase();
     // The default Magazine view already shows the featured story above the grid.
     if (story.id === featuredStoryId && state.view === 'magazine' && state.format === 'all' && state.topic === 'all' && !state.query.trim()) return false;
     return (state.format === 'all' || (state.format === 'saved' ? state.saved.has(story.id) : story.kind === state.format)) && (state.topic === 'all' || story.topic === state.topic) && searchable.includes(state.query.toLowerCase().trim());
   });
   cards.innerHTML = matches.map(original => {
     const story = localizedStory(original);
-    return `<article class="card" data-story="${story.id}"><div class="cover card-art">${art(story)}</div><h3><a class="card-link" href="${escapeHtml(story.url)}" lang="${state.locale}">${escapeHtml(story.title)}</a></h3><div class="meta"><span>${t('article')}</span><span>·</span><span>${topicLabel(story.topic)}</span></div><p lang="${state.locale}">${escapeHtml(story.summary)}</p><div class="card-bottom"><span>${dateLabel(story)} · ${readingLabel(story)}</span><button class="bookmark" data-save="${story.id}" title="${t(state.saved.has(story.id) ? 'unsave' : 'save')}" aria-label="${escapeHtml(t(state.saved.has(story.id) ? 'unsave' : 'save') + ' ' + story.title)}" aria-pressed="${state.saved.has(story.id)}"><span class="ui-icon icon-bookmark" aria-hidden="true"></span></button></div></article>`;
+    return `<article class="card" data-story="${story.id}"><div class="cover card-art">${art(story)}</div><h3><a class="card-link" href="${escapeHtml(story.url)}" lang="${state.locale}">${escapeHtml(story.title)}</a></h3><div class="meta"><span>${t('article')}</span>${story.topic ? `<span>·</span><span>${topicLabel(story.topic)}</span>` : ''}</div><p lang="${state.locale}">${escapeHtml(story.summary)}</p><div class="card-bottom"><span>${dateLabel(story)} · ${readingLabel(story)}</span><button class="bookmark" data-save="${story.id}" title="${t(state.saved.has(story.id) ? 'unsave' : 'save')}" aria-label="${escapeHtml(t(state.saved.has(story.id) ? 'unsave' : 'save') + ' ' + story.title)}" aria-pressed="${state.saved.has(story.id)}"><span class="ui-icon icon-bookmark" aria-hidden="true"></span></button></div></article>`;
   }).join('') || `<div class="empty"><h3>${t('emptyTitle')}</h3><p>${t('emptyBody')}</p><button class="text-link" id="reset">${t('reset')}</button></div>`;
   document.querySelector('#result-count').textContent = state.locale === 'zh-Hant' ? `${matches.length} 則內容` : `${matches.length} ${matches.length === 1 ? 'story' : 'stories'}`;
   document.querySelector('#saved-count').textContent = state.saved.size;
@@ -57,6 +56,8 @@ function renderLanguage() {
   document.querySelector('#hero-art').setAttribute('aria-label', `${t('previewVerb')} ${featured.title}`);
   document.querySelector('#featured-title').textContent = featured.title;
   document.querySelector('#featured-summary').textContent = featured.summary;
+  document.querySelector('#featured-topic').textContent = topicLabel(featured.topic);
+  document.querySelector('#featured-topic').hidden = !featured.topic;
   document.querySelector('#featured-title').lang = state.locale;
   document.querySelector('#featured-summary').lang = state.locale;
   ['#hero-art', '#featured-title', '#featured-link'].forEach(selector => { document.querySelector(selector).href = featured.url; });
