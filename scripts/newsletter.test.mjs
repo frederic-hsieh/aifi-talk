@@ -5,9 +5,9 @@ import { tokenFor, readToken } from '../lib/newsletter.js';
 import { readFile } from 'node:fs/promises';
 const posts = JSON.parse(await readFile(new URL('../content/posts.json', import.meta.url)));
 process.env.NEWSLETTER_TOKEN_SECRET = 'test-only-secret-not-for-production-123456789';
-const call = async (body, method = 'POST', query = {}) => {
+const call = async (body, method = 'POST', query = {}, origin = (process.env.SITE_URL || 'https://aifitalk.com').replace(/\/$/, '')) => {
  const response = { headers: {}, setHeader(k,v) { this.headers[k] = v; return this; }, status(code) { this.code = code; return this; }, json(data) { this.data = data; return this; }, end(data) { this.data = data; return this; } };
- await handler({ method, body, query, headers: { accept:'application/json', origin:(process.env.SITE_URL || 'https://aifitalk.com').replace(/\/$/, '') }, socket: { remoteAddress:'test' } }, response);
+ await handler({ method, body, query, headers: { accept:'application/json', origin }, socket: { remoteAddress:'test' } }, response);
  return response;
 };
 test('All eight article editions include one form within the body', async () => {
@@ -46,7 +46,9 @@ test('Confirmation, repeat confirmation, unsubscribe, replay, and provider failu
   assert.equal((await call({email:'reader@example.com'})).code,200); assert.equal(contact,null);
   const tokens = [...email.text.matchAll(/token=([A-Za-z0-9_-]+)/g)].map(m=>m[1]);
   assert.equal((await call({},'GET',{token:tokens[0]})).code,200); assert.equal(contact,null);
-  assert.equal((await call({token:tokens[0]})).code,200); assert.equal(contact.unsubscribed,false);
+  // The confirm page sends Origin: null (no-referrer); the token, not the origin, authorizes it.
+  assert.equal((await call({token:tokens[0]}, 'POST', {}, 'null')).code,200); assert.equal(contact.unsubscribed,false);
+  assert.equal((await call({email:'other@example.com'}, 'POST', {}, 'https://evil.example')).code,403);
   assert.equal((await call({token:tokens[0]})).code,200);
   assert.equal((await call({token:tokens[1]})).code,200); assert.equal(contact.unsubscribed,true);
   assert.equal((await call({token:tokens[0]})).code,409);

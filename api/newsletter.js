@@ -15,8 +15,10 @@ export default async function handler(req, res) {
   if (!process.env.RESEND_API_KEY || !process.env.NEWSLETTER_FROM || !process.env.NEWSLETTER_TOKEN_SECRET) return reply(503, 'Newsletter signup is temporarily unavailable. Please try again later.');
   const origin = (process.env.SITE_URL || 'https://aifitalk.com').replace(/\/$/, '');
   const allowedOrigins = [origin, ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : [])];
-  if (req.method === 'POST' && req.headers.origin && !allowedOrigins.includes(req.headers.origin)) return reply(403, 'Request not allowed');
   const token = req.method === 'GET' ? req.query?.token : body.token;
+  // Only new signups need the same-origin check. Confirm and unsubscribe are authorized by their encrypted token,
+  // and their page's no-referrer policy makes browsers send `Origin: null`.
+  if (req.method === 'POST' && !token && req.headers.origin && !allowedOrigins.includes(req.headers.origin)) return reply(403, 'Request not allowed');
   if (token) {
     let payload;
     try { payload = readToken(token); } catch { return reply(400, 'This link is invalid or expired. Please request a new confirmation email.'); }
