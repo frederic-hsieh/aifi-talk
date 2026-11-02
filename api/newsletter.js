@@ -37,7 +37,7 @@ export default async function handler(req, res) {
       if (existing?.unsubscribed) return reply(409, zh ? '這個 Email 已取消訂閱，請聯絡作者重新加入。' : 'This address previously unsubscribed. Please contact the author to rejoin.');
       if (!existing) await resend('/contacts', 'POST', { email: payload.email, unsubscribed: false });
       return reply(200, zh ? '訂閱成功，謝謝你！' : 'You’re subscribed. Thank you!');
-    } catch { return reply(502, 'We couldn’t update your subscription. Please try again.'); }
+    } catch (error) { console.error('Newsletter contact update failed:', error.message); return reply(502, 'We couldn’t update your subscription. Please try again.'); }
   }
   if (req.method !== 'POST') return reply(400, 'A confirmation link is required.');
   const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : '';
@@ -59,5 +59,5 @@ export default async function handler(req, res) {
       text: chinese ? `請在一小時內點開連結，並按下確認訂閱：\n${confirm}\n\n如果你沒有要求訂閱，請忽略這封信。\n取消訂閱：${unsubscribe}` : `Open this link within one hour, then press Confirm subscription:\n${confirm}\n\nIf you didn’t request this, ignore this email.\nUnsubscribe: ${unsubscribe}`
     });
     return reply(200, 'Check your inbox for a confirmation email.');
-  } catch { return reply(502, 'We couldn’t send your confirmation email. Please try again later.'); }
+  } catch (error) { console.error('Newsletter confirmation email failed:', error.message); return reply(502, 'We couldn’t send your confirmation email. Please try again later.'); }
 }
